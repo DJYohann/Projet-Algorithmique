@@ -1,6 +1,7 @@
 #include "bibliotheque.h"
 
 int main(int argc, char *argv[]) {
+	programme();
 
-	return 0;
+	return EXIT_SUCCESS;
 }
