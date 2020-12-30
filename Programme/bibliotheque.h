@@ -40,7 +40,12 @@ typedef struct {
 	int idJeu;
 } Reservation;
 
-/* Définitions fonctions */
+/* Fonctions */
+
+Jeu lireJeu(FILE* flot);
+Adherent lireAdherent(FILE* flot);
+Emprunt lireEmprunt(FILE* flot);
+Reservation lireReservation(FILE* flot);
 
 int choixMenu(void);
 void programme(void);

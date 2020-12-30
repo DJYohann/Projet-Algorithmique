@@ -1,5 +1,46 @@
 #include "bibliotheque.h"
 
+Jeu lireJeu(FILE* flot) {
+	Jeu jeu;
+
+	fscanf(flot, "%d\n", &jeu.idJeu);
+	fgets(jeu.nom, 31, flot);
+	jeu.nom[strlen(jeu.nom) - 1] = '\0';
+	fscanf(flot, "%s %d", jeu.type, &jeu.nbExemp);
+
+	return jeu;
+}
+
+Adherent lireAdherent(FILE* flot) {
+	Adherent adh;
+
+	fscanf(flot, "%d %s\n", &adh.idAdherent, adh.civilite);
+	fgets(adh.nom, 31, flot);
+	adh.nom[strlen(adh.nom) - 1] = '\0';
+	fgets(adh.prenom, 31, flot);
+	adh.prenom[strlen(adh.prenom) - 1] = '\0';
+	fscanf(flot, "%d/%d/%d", &adh.dateInscription.jour, &adh.dateInscription.mois, &adh.dateInscription.annee);
+
+	return adh;
+}
+
+Emprunt lireEmprunt(FILE* flot) {
+	Emprunt emp;
+
+	fscanf(flot, "%d %d %d %d/%d/%d", &emp.idEmprunt, &emp.idAdherent, &emp.idJeu, 
+		&emp.dateEmprunt.jour, &emp.dateEmprunt.mois, &emp.dateEmprunt.annee);
+
+	return emp;
+}
+
+Reservation lireReservation(FILE* flot) {
+	Reservation res;
+
+	fscanf(flot, "%d %d %d", &res.idReservation, &res.idAdherent, &res.idJeu);
+
+	return res;
+}
+
 /* 
 Titre : choixMenu 
 Finalité : Afficher le menu et saisir le choix
@@ -28,6 +69,11 @@ int choixMenu(void) {
 
 	return choix;
 }
+
+/* 
+Titre : programme
+Finalité : application bibliothèque
+*/ 
 
 void programme(void) {
 	int choix;
