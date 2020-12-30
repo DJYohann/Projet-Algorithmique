@@ -1,5 +1,13 @@
 #include "bibliotheque.h"
 
+/* 
+Titre : lireJeu
+Finalité : lire un jeu dans un flot donné
+Variable : jeu (Jeu) - jeu à lire
+Paramètre : flot (FILE*) - flot de lecture
+Retour : jeu (Jeu) - jeu
+*/
+
 Jeu lireJeu(FILE* flot) {
 	Jeu jeu;
 
@@ -10,6 +18,14 @@ Jeu lireJeu(FILE* flot) {
 
 	return jeu;
 }
+
+/*
+Titre : lireAdherent
+Finalité : lire un adherent dans un flot donné
+Variable : adh (Adherent) - adherent à lire
+Paramètre : flot (FILE*) - flot de lecture
+Retour : adh (Adherent) - adherent
+*/
 
 Adherent lireAdherent(FILE* flot) {
 	Adherent adh;
@@ -24,6 +40,14 @@ Adherent lireAdherent(FILE* flot) {
 	return adh;
 }
 
+/* 
+Titre : lireEmprunt
+Finalité : lire un emprunt dans un flot donné
+Variable : emp (Emprunt) - emprunt à lire
+Paramètre : flot (FILE*) - flot de lecture
+Retour : emp (Emprunt) - emprunt
+*/
+
 Emprunt lireEmprunt(FILE* flot) {
 	Emprunt emp;
 
@@ -32,6 +56,14 @@ Emprunt lireEmprunt(FILE* flot) {
 
 	return emp;
 }
+
+/* 
+Titre : lireReservation
+Finalité : lire une réservation dans un flot donné
+Variable : res (Reservation) - réservation à lire
+Paramètre : flot (FILE*) - flot de lecture
+Retour : res (Reservation) - réservation
+*/
 
 Reservation lireReservation(FILE* flot) {
 	Reservation res;
