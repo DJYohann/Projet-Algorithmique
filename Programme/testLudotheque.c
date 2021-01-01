@@ -4,6 +4,16 @@ void afficherJeu(Jeu jeu) {
 	printf("%d\t%s\t%s\t%d\n", jeu.idJeu, jeu.nom, jeu.type, jeu.nbExemp);
 }
 
+void afficherJeux(Jeu **tjeux, int nbjeux) {
+	int i; 
+
+	printf("Nb Jeux : %d\n", nbjeux);
+	printf("ID Jeu\tNom\tType\tNb Exemplaire\n");
+	for (i = 0; i < nbjeux; i++) {
+		afficherJeu(*tjeux[i]);
+	}
+}
+
 void afficherAdherent(Adherent adh) {
 	printf("%d\t\t%s\t\t%s\t%s\t%d/%d/%d\n", adh.idAdherent, adh.civilite, adh.nom, 
 		adh.prenom, adh.dateInscription.jour, adh.dateInscription.mois, adh.dateInscription.annee);
@@ -18,57 +28,21 @@ void afficherReservation(Reservation res) {
 	printf("%d\t\t%d\t\t%d\n", res.idReservation, res.idAdherent, res.idJeu);
 }
 
-void testLectureFichiers(void) {
-	FILE *fjeux, *fadherents, *femprunts, *freservations;
-	Jeu jeu;
-	Adherent adh;
-	Emprunt emp;
-	Reservation res;
+void testChargementFichiers(void) {
+	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichier/adherents.don";
+	Jeu **tjeux;
 
-	fjeux = fopen("../Fichiers/jeux.don", "r");
-	if (fjeux == NULL) {
-		printf("Ouverture impossible\n");
-	}
+	int nbjeux, i;
 
-	fadherents = fopen("../Fichiers/adherents.don", "r");
-	if (fadherents == NULL) {
-		printf("Ouverture impossible\n");
-	}
+	tjeux = chargementJeux(ficjeux, &nbjeux);
 
-	femprunts = fopen("../Fichiers/emprunts.don", "r");
-	if (femprunts == NULL) {
-		printf("Ouverture impossible\n");
-	}
+	afficherJeux(tjeux, nbjeux);
 
-	freservations = fopen("../Fichiers/reservations.don", "r");
-	if (freservations == NULL) {
-		printf("Ouverture impossible\n");
-	}
-
-	jeu = lireJeu(fjeux);
-	adh = lireAdherent(fadherents);
-	emp = lireEmprunt(femprunts);
-	res = lireReservation(freservations);
-
-	printf("ID Jeu\tNom\t\tType\tNb Exemplaires\n");
-
-	afficherJeu(jeu);
-
-	printf("\nID Adherent\tCivilité\tNom\tPrénom\tDate Inscription\n");
-
-	afficherAdherent(adh);
-
-	printf("\nID Emprunt\tID Adherent\tID Jeu\tDate Emprunt\n");
-
-	afficherEmprunt(emp);
-
-	printf("\nID Reservation\tID Adherent\tID Jeu\n");
-
-	afficherReservation(res);
+	free(tjeux);
 }
 
 int main(int argc, char *argv[]) {
-	testLectureFichiers();
+	testChargementFichiers();
 	//programme();
 
 	return EXIT_SUCCESS;

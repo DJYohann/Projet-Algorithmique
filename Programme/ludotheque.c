@@ -74,6 +74,60 @@ Reservation lireReservation(FILE* flot) {
 }
 
 /* 
+Titre : chargementJeux
+Finalité : charger en mémoire le fichier des jeux
+Variables : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
+            jeu (Jeu) - structure Jeu
+            fic (FILE*) - fichier de jeux
+            i (int) - indice du tableau 
+Paramètres : nomFic (char*) - nom du fichier 
+			 nbJeux (int*) - nombre de jeux
+Retours : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
+		  nbJeux (int*) - nombre de jeux
+*/
+
+Jeu** chargementJeux(char *nomFic, int *nbjeux) {
+	Jeu **tjeux;
+	Jeu jeu;
+	FILE* fic;
+	int i;
+
+	fic = fopen(nomFic, "r");
+	if (fic == NULL) {
+		fprintf(stderr, "Ouverture du fichier %s impossible\nFichier %s ligne %d\n", nomFic, __FILE__,  __LINE__);
+		exit(1);
+	}
+
+	fscanf(fic, "%d",  nbjeux);
+	tjeux = (Jeu**)malloc(*nbjeux * sizeof(Jeu));
+	if (tjeux == NULL) {
+		fprintf(stderr, "Allocation mémoire impossible\n");
+		exit(1);
+	}
+
+	for (i = 0; i < *nbjeux; i++) {
+		tjeux[i] = (Jeu*)malloc(sizeof(Jeu));
+		if (tjeux[i] == NULL) {
+			fprintf(stderr, "Allocation mémoire impossible\n");
+			exit(1);
+		}
+		jeu = lireJeu(fic);	
+		*tjeux[i] = jeu;
+	}
+	
+	return tjeux;
+}
+
+Adherent** chargementAdherent(char *nomFic, int *nbadherents) {
+	Adherent** tadherents;
+	Adherent adh;
+	FILE* fic;
+	int i;
+
+	
+}
+
+/* 
 Titre : choixMenu 
 Finalité : Afficher le menu et saisir le choix
 Variable : choix (int) - choix du menu

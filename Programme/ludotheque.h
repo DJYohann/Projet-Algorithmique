@@ -47,5 +47,16 @@ Adherent lireAdherent(FILE* flot);
 Emprunt lireEmprunt(FILE* flot);
 Reservation lireReservation(FILE* flot);
 
+Jeu** chargementJeux(char *nomFic, int *nbjeux);
+
 int choixMenu(void);
 void programme(void);
+
+/* Fonctions tests */
+
+void afficherJeu(Jeu jeu);
+void afficherJeux(Jeu **tjeux, int nbjeux);
+void afficherAdherent(Adherent adh);
+void afficherEmprunt(Emprunt emp);
+void afficherReservation(Reservation res);
+void testChargementFichiers(void);
