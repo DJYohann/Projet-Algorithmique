@@ -40,6 +40,20 @@ Adherent lireAdherent(FILE* flot) {
 	return adh;
 }
 
+
+/* 
+Titre : intialiserEmprunts
+Finalité : initialiser la liste chaînée des emprunts
+Variable : listeEmprunts (Emprunts) - liste chaînée des emprunts
+Retour : listeEmprunts (Emprunts) - liste chaînée des emprunts
+*/
+
+Emprunts intialiserEmprunts(void) {
+	Emprunts listeEmprunts = NULL;
+
+	return listeEmprunts;
+}
+
 /* 
 Titre : lireEmprunt
 Finalité : lire un emprunt dans un flot donné
@@ -55,6 +69,19 @@ Emprunt lireEmprunt(FILE* flot) {
 		&emp.dateEmprunt.jour, &emp.dateEmprunt.mois, &emp.dateEmprunt.annee);
 
 	return emp;
+}
+
+/* 
+Titre : intialiserReservations
+Finalité : initialiser la liste chaînée des réservations
+Variable : listeReservations (Reservations) - liste chaînée des réservations
+Retour : listeReservations (Reservations) - liste chaînée des réservations
+*/
+
+Reservations intialiserReservations(void) {
+	Reservation listeReservations = NULL;
+
+	return listeReservations;
 }
 
 /* 
@@ -81,9 +108,9 @@ Variables : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
             fic (FILE*) - fichier de jeux
             i (int) - indice du tableau 
 Paramètres : nomFic (char*) - nom du fichier 
-			 nbJeux (int*) - nombre de jeux
+			 nbjeux (int*) - nombre de jeux
 Retours : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
-		  nbJeux (int*) - nombre de jeux
+		  nbjeux (int*) - nombre de jeux
 */
 
 Jeu** chargementJeux(char *nomFic, int *nbjeux) {
@@ -99,6 +126,7 @@ Jeu** chargementJeux(char *nomFic, int *nbjeux) {
 	}
 
 	fscanf(fic, "%d",  nbjeux);
+
 	tjeux = (Jeu**)malloc(*nbjeux * sizeof(Jeu));
 	if (tjeux == NULL) {
 		fprintf(stderr, "Allocation mémoire impossible\n");
@@ -118,13 +146,50 @@ Jeu** chargementJeux(char *nomFic, int *nbjeux) {
 	return tjeux;
 }
 
-Adherent** chargementAdherent(char *nomFic, int *nbadherents) {
+/* 
+Titre : chargementAdherents
+Finalité : charger en mémoire le fichier des adhérents
+Variables : tadherents (Adherent**) - tableau de pointeur sur la structure Adherent
+            adh (Adherent) - structure Adherent
+            fic (FILE*) - fichier des adhérents
+            i (int) - indice du tableau 
+Paramètres : nomFic (char*) - nom du fichier 
+			 nbadherents (int*) - nombre d'adhérents
+Retours : tjeux (Jeu**) - tableau de pointeur sur la structure Adherent
+		  nbadherents (int*) - nombre d'adhérents
+*/
+
+Adherent** chargementAdherents(char *nomFic, int *nbadherents) {
 	Adherent** tadherents;
 	Adherent adh;
 	FILE* fic;
 	int i;
 
-	
+	fic = fopen(nomFic, "r");
+	if (fic == NULL) {
+		fprintf(stderr, "Ouverture du fichier %s impossible\nFichier %s ligne %d\n", nomFic, __FILE__,  __LINE__);
+		exit(1);
+	}
+
+	fscanf(fic, "%d", nbadherents);
+
+	tadherents = (Adherent**)malloc(*nbadherents * sizeof(Adherent));
+	if (tadherents == NULL) {
+		fprintf(stderr, "Allocation mémoire impossible\n");
+		exit(1);
+	}
+
+	for (i = 0; i < *nbadherents; i++) {
+		tadherents[i] = (Adherent*)malloc(sizeof(Adherent));
+		if (tadherents[i] == NULL) {
+			fprintf(stderr, "Allocation mémoire impossible\n");
+			exit(1);
+		}
+		adh = lireAdherent(fic);	
+		*tadherents[i] = adh;
+	}
+
+	return tadherents;
 }
 
 /* 
@@ -139,16 +204,17 @@ int choixMenu(void) {
 
 	system("clear");
 	printf("1 - Affichage jeux disponibles\n");
-	printf("2 - Affichage liste emprunts\n");
-	printf("3 - Affichage liste réservations\n");
-	printf("4 - Saisie emprunt ou réservation\n");
-	printf("5 - Retour d'un jeu\n");	
-	printf("6 - Annulation d'une réservation\n");
-	printf("7 - Quitter\n");
+	printf("2 - Affichage emprunts en cours\n");
+	printf("3 - Affichage réservations pour un jeu\n");
+	printf("4 - Saisie emprunt\n");
+	printf("5 - Saisie réservation\n");
+	printf("6 - Retour d'un jeu\n");	
+	printf("7 - Annulation d'une réservation\n");
+	printf("8 - Quitter\n");
 	
 	printf("Choix : ");
 	scanf("%d%*c", &choix);
-	while (choix < 1 || choix > 7) {
+	while (choix < 1 || choix > 8) {
 		printf("Choix : ");
 	 	scanf("%d%*c", &choix);
 	} 
@@ -168,7 +234,7 @@ void programme(void) {
 	// TODO - Chargement 
 
 	choix = choixMenu();
-	while (choix != 7) {
+	while (choix != 8) {
 
 		printf("\nAppuyez sur une touche pour continuer");
 		c = getchar();

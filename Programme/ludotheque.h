@@ -4,6 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+/* Énumérations */
+
+typedef enum {FAUX, VRAI} bool;
+
 /* Structures */
 
 typedef struct {
@@ -24,7 +28,7 @@ typedef struct {
 	char civilite[4];
 	char nom[30];
 	char prenom[30];
-	Date dateInscription;
+	Date dateInscription;  
 } Adherent;
 
 typedef struct {
@@ -32,22 +36,27 @@ typedef struct {
 	int idAdherent;
 	int idJeu;
 	Date dateEmprunt;
-} Emprunt;
+	struct maillon *suiv;
+} Emprunt ,*Emprunts;
 
 typedef struct {
 	int idReservation;
 	int idAdherent;
 	int idJeu;
-} Reservation;
+	struct maillon *suiv;
+} Reservation, *Reservations;
 
 /* Fonctions */
 
 Jeu lireJeu(FILE* flot);
 Adherent lireAdherent(FILE* flot);
 Emprunt lireEmprunt(FILE* flot);
+Emprunts intialiserEmprunts(void);
 Reservation lireReservation(FILE* flot);
+Reservations intialiserReservations(void);
 
 Jeu** chargementJeux(char *nomFic, int *nbjeux);
+Adherent** chargementAdherents(char *nomFic, int *nbadherents);
 
 int choixMenu(void);
 void programme(void);
@@ -57,6 +66,7 @@ void programme(void);
 void afficherJeu(Jeu jeu);
 void afficherJeux(Jeu **tjeux, int nbjeux);
 void afficherAdherent(Adherent adh);
+void afficherAdherents(Adherent** tadherents, int nbadherents)
 void afficherEmprunt(Emprunt emp);
 void afficherReservation(Reservation res);
 void testChargementFichiers(void);
