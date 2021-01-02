@@ -19,87 +19,6 @@ Jeu lireJeu(FILE* flot) {
 	return jeu;
 }
 
-/*
-Titre : lireAdherent
-Finalité : lire un adherent dans un flot donné
-Variable : adh (Adherent) - adherent à lire
-Paramètre : flot (FILE*) - flot de lecture
-Retour : adh (Adherent) - adherent
-*/
-
-Adherent lireAdherent(FILE* flot) {
-	Adherent adh;
-
-	fscanf(flot, "%d %s\n", &adh.idAdherent, adh.civilite);
-	fgets(adh.nom, 31, flot);
-	adh.nom[strlen(adh.nom) - 1] = '\0';
-	fgets(adh.prenom, 31, flot);
-	adh.prenom[strlen(adh.prenom) - 1] = '\0';
-	fscanf(flot, "%d/%d/%d", &adh.dateInscription.jour, &adh.dateInscription.mois, &adh.dateInscription.annee);
-
-	return adh;
-}
-
-
-/* 
-Titre : intialiserEmprunts
-Finalité : initialiser la liste chaînée des emprunts
-Variable : listeEmprunts (Emprunts) - liste chaînée des emprunts
-Retour : listeEmprunts (Emprunts) - liste chaînée des emprunts
-*/
-
-Emprunts intialiserEmprunts(void) {
-	Emprunts listeEmprunts = NULL;
-
-	return listeEmprunts;
-}
-
-/* 
-Titre : lireEmprunt
-Finalité : lire un emprunt dans un flot donné
-Variable : emp (Emprunt) - emprunt à lire
-Paramètre : flot (FILE*) - flot de lecture
-Retour : emp (Emprunt) - emprunt
-*/
-
-Emprunt lireEmprunt(FILE* flot) {
-	Emprunt emp;
-
-	fscanf(flot, "%d %d %d %d/%d/%d", &emp.idEmprunt, &emp.idAdherent, &emp.idJeu, 
-		&emp.dateEmprunt.jour, &emp.dateEmprunt.mois, &emp.dateEmprunt.annee);
-
-	return emp;
-}
-
-/* 
-Titre : intialiserReservations
-Finalité : initialiser la liste chaînée des réservations
-Variable : listeReservations (Reservations) - liste chaînée des réservations
-Retour : listeReservations (Reservations) - liste chaînée des réservations
-*/
-
-Reservations intialiserReservations(void) {
-	Reservation listeReservations = NULL;
-
-	return listeReservations;
-}
-
-/* 
-Titre : lireReservation
-Finalité : lire une réservation dans un flot donné
-Variable : res (Reservation) - réservation à lire
-Paramètre : flot (FILE*) - flot de lecture
-Retour : res (Reservation) - réservation
-*/
-
-Reservation lireReservation(FILE* flot) {
-	Reservation res;
-
-	fscanf(flot, "%d %d %d", &res.idReservation, &res.idAdherent, &res.idJeu);
-
-	return res;
-}
-
 /* 
 Titre : chargementJeux
 Finalité : charger en mémoire le fichier des jeux
@@ -143,7 +62,29 @@ Jeu** chargementJeux(char *nomFic, int *nbjeux) {
 		*tjeux[i] = jeu;
 	}
 	
+	fclose(fic);
 	return tjeux;
+}
+
+/*
+Titre : lireAdherent
+Finalité : lire un adherent dans un flot donné
+Variable : adh (Adherent) - adherent à lire
+Paramètre : flot (FILE*) - flot de lecture
+Retour : adh (Adherent) - adherent
+*/
+
+Adherent lireAdherent(FILE* flot) {
+	Adherent adh;
+
+	fscanf(flot, "%d %s\n", &adh.idAdherent, adh.civilite);
+	fgets(adh.nom, 31, flot);
+	adh.nom[strlen(adh.nom) - 1] = '\0';
+	fgets(adh.prenom, 31, flot);
+	adh.prenom[strlen(adh.prenom) - 1] = '\0';
+	fscanf(flot, "%d/%d/%d", &adh.dateInscription.jour, &adh.dateInscription.mois, &adh.dateInscription.annee);
+
+	return adh;
 }
 
 /* 
@@ -189,7 +130,211 @@ Adherent** chargementAdherents(char *nomFic, int *nbadherents) {
 		*tadherents[i] = adh;
 	}
 
+	fclose(fic);
 	return tadherents;
+}
+
+/* 
+Titre : intialiserEmprunts
+Finalité : initialiser la liste chaînée des emprunts
+Variable : listemp (Emprunts) - liste chaînée des emprunts
+Retour : listemp (Emprunts) - liste chaînée des emprunts
+*/
+
+Emprunts initialiserEmprunts(void) {
+	Emprunts listemp = NULL;
+
+	return listemp;
+}
+
+/* 
+Titre : lireEmprunt
+Finalité : lire un emprunt dans un flot donné
+Variable : emp (Emprunt) - emprunt à lire
+Paramètre : flot (FILE*) - flot de lecture
+Retour : emp (Emprunt) - emprunt
+*/
+
+Emprunt lireEmprunt(FILE* flot) {
+	Emprunt emp;
+
+	fscanf(flot, "%d %d %d %d/%d/%d", &emp.idEmprunt, &emp.idAdherent, &emp.idJeu, 
+		&emp.dateEmprunt.jour, &emp.dateEmprunt.mois, &emp.dateEmprunt.annee);
+
+	return emp;
+}
+
+/*
+Titre : insererEnTete
+Finalité : insérer en tête de liste un emprunt
+Variable : e (Emprunts*) - 
+Paramètres : listemp (Emprunts) - 
+			 emp (Emprunt) - 
+Retour : e (Emprunts*) - 
+*/
+
+Emprunts insererEnTeteEmp(Emprunts listemp, Emprunt emp) {
+	Emprunt *e;
+
+	e = (Emprunt*)malloc(sizeof(Emprunt));
+	if (e == NULL) {
+		fprintf(stderr, "Allocation mémoire impossible\n");
+		exit(1);
+	}
+
+	e->idEmprunt = emp.idEmprunt;
+	e->idAdherent = emp.idAdherent;
+	e->idJeu = emp.idJeu;
+	e->dateEmprunt.jour = emp.dateEmprunt.jour;
+	e->dateEmprunt.mois = emp.dateEmprunt.mois;
+	e->dateEmprunt.annee = emp.dateEmprunt.annee;
+	e->suiv = listemp;
+
+	return e;
+}
+
+/*
+Titre : inserer
+Finalité : insérer dans la liste un emprunt
+Paramètres : listemp (Emprunts) - 
+             emp (Emprunt) - 
+Retour : listemp (Emprunts) - 
+*/
+
+Emprunts insererEmp(Emprunts listemp, Emprunt emp) {
+	if (listemp == NULL) {
+		return insererEnTeteEmp(listemp, emp);
+	}
+
+	if (emp.dateEmprunt.mois < listemp->dateEmprunt.mois) {
+		return insererEnTeteEmp(listemp, emp);
+	}
+
+	if (emp.dateEmprunt.annee == listemp->dateEmprunt.annee && emp.dateEmprunt.mois == listemp->dateEmprunt.mois && emp.dateEmprunt.jour == listemp->dateEmprunt.jour) {
+		return insererEnTeteEmp(listemp, emp);
+	}
+
+	listemp->suiv = insererEmp(listemp->suiv, emp);
+
+	return listemp;
+}
+
+/*
+Titre : chargementEmprunts
+Finalité : charger en mémoire le fichier des emprunts
+Variables : emp (Emprunt) - 
+            fic (FILE*) - 
+            nbemp (int) - 
+Paramètres : nomFic (char*) - nom du fichier 
+			 listemp (Emprunts) - 
+Retour : listemp (Emprunts) -
+*/
+
+Emprunts chargementEmprunts(char *nomFic, Emprunts listemp, int *nbemp) {
+	Emprunt emp;
+	FILE* fic;
+
+	fic = fopen(nomFic, "r");
+	if (fic == NULL) {
+		fprintf(stderr, "Ouverture du fichier %s impossible\nFichier %s ligne %d\n", nomFic, __FILE__,  __LINE__);
+		exit(1);
+	}
+
+	emp = lireEmprunt(fic);
+	while(!feof(fic)) {
+		listemp = insererEmp(listemp, emp);
+		(*nbemp)++;
+		emp = lireEmprunt(fic);
+	}
+
+	fclose(fic);
+	return listemp;
+}
+
+/* 
+Titre : intialiserReservations
+Finalité : initialiser la liste chaînée des réservations
+Variable : listres (Reservations) - liste chaînée des réservations
+Retour : listres (Reservations) - liste chaînée des réservations
+*/
+
+Reservations intialiserReservations(void) {
+	Reservations listres = NULL;
+
+	return listres;
+}
+
+/* 
+Titre : lireReservation
+Finalité : lire une réservation dans un flot donné
+Variable : res (Reservation) - réservation à lire
+Paramètre : flot (FILE*) - flot de lecture
+Retour : res (Reservation) - réservation
+*/
+
+Reservation lireReservation(FILE* flot) {
+	Reservation res;
+
+	fscanf(flot, "%d %d %d", &res.idReservation, &res.idAdherent, &res.idJeu);
+
+	return res;
+}
+
+/*
+Titre : 
+Finalité : 
+*/
+
+Reservations insererEnTeteRes(Reservations listres, Reservation res) {
+	Reservation *r;
+
+	r = (Reservation*)malloc(sizeof(Reservation));
+	if (r == NULL) {
+		fprintf(stderr, "Allocation mémoire impossible\n");
+		exit(1);
+	}
+
+	r->idReservation = res.idReservation;
+	r->idAdherent = res.idAdherent;
+	r->idJeu = res.idJeu;
+	r->suiv = listres;
+
+	return r;
+}
+
+/*
+Titre : 
+Finalité : 
+*/
+
+// Reservations insererRes (Reservations listres, Reservation res) {
+
+// }
+
+/*
+Titre : 
+Finalité : 
+*/
+
+Reservations chargementReservations(char *nomFic, Reservations listres, int *nbres) {
+	Reservation res;
+	FILE* fic;
+
+	fic = fopen(nomFic, "r");
+	if (fic == NULL) {
+		fprintf(stderr, "Ouverture du fichier %s impossible\nFichier %s ligne %d\n", nomFic, __FILE__,  __LINE__);
+		exit(1);
+	}
+
+	res = lireReservation(fic);
+	while (!feof(fic)) {
+		listres = insererEnTeteRes(listres, res);
+		(*nbres)++;
+		res = lireReservation(fic);
+	}
+
+	fclose(fic);
+	return listres;
 }
 
 /* 
@@ -225,6 +370,8 @@ int choixMenu(void) {
 /* 
 Titre : programme
 Finalité : application ludotheque
+Variables : 
+Paramètres : 
 */ 
 
 void programme(void) {

@@ -31,32 +31,41 @@ typedef struct {
 	Date dateInscription;  
 } Adherent;
 
-typedef struct {
+typedef struct emprunt {
 	int idEmprunt;
 	int idAdherent;
 	int idJeu;
 	Date dateEmprunt;
-	struct maillon *suiv;
+	struct emprunt *suiv;
 } Emprunt ,*Emprunts;
 
-typedef struct {
+typedef struct reservation {
 	int idReservation;
 	int idAdherent;
 	int idJeu;
-	struct maillon *suiv;
+	struct reservation *suiv;
 } Reservation, *Reservations;
 
 /* Fonctions */
 
 Jeu lireJeu(FILE* flot);
+Jeu** chargementJeux(char *nomFic, int *nbjeux);
+
 Adherent lireAdherent(FILE* flot);
+Adherent** chargementAdherents(char *nomFic, int *nbadherents);
+
 Emprunt lireEmprunt(FILE* flot);
-Emprunts intialiserEmprunts(void);
+Emprunts initialiserEmprunts(void);
+Emprunts insererEnTeteEmp(Emprunts listemp, Emprunt emp);
+Emprunts insererEmp(Emprunts listemp, Emprunt emp);
+Emprunts chargementEmprunts(char *nomFic, Emprunts listemp, int *nbemp);
+
 Reservation lireReservation(FILE* flot);
 Reservations intialiserReservations(void);
+Reservations insererEnTeteRes(Reservations listres, Reservation res);
+Reservations insererRes (Reservations listres, Reservation res);
+Reservations chargementReservations(char *nomFic, Reservations listres, int *nbres);
 
-Jeu** chargementJeux(char *nomFic, int *nbjeux);
-Adherent** chargementAdherents(char *nomFic, int *nbadherents);
 
 int choixMenu(void);
 void programme(void);
@@ -66,7 +75,8 @@ void programme(void);
 void afficherJeu(Jeu jeu);
 void afficherJeux(Jeu **tjeux, int nbjeux);
 void afficherAdherent(Adherent adh);
-void afficherAdherents(Adherent** tadherents, int nbadherents)
-void afficherEmprunt(Emprunt emp);
-void afficherReservation(Reservation res);
+void afficherAdherents(Adherent** tadherents, int nbadherents);
+void afficherEmprunts(Emprunts listemp, int nbempts);
+void afficherReservations(Reservations listres, int nbres);
+
 void testChargementFichiers(void);

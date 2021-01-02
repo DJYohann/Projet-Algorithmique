@@ -29,35 +29,60 @@ void afficherAdherents(Adherent** tadherents, int nbadherents) {
 	}
 }
 
-void afficherEmprunt(Emprunt emp) {
-	printf("%d\t\t%d\t\t%d\t%d/%d/%d\n", emp.idEmprunt, emp.idAdherent, emp.idJeu, 
-		emp.dateEmprunt.jour, emp.dateEmprunt.mois, emp.dateEmprunt.annee);
+void afficherEmprunts(Emprunts listemp, int nbempts) {
+	printf("Nb Emprunts : %d\n", nbempts);
+	printf("ID Emprunt\tID Adherent\tID Jeu\tDate Emprunt\n");
+
+	while (listemp != NULL) {
+		printf("%d\t%d\t%d\t%d/%d/%d\n", listemp->idEmprunt, listemp->idAdherent, listemp->idJeu, 
+			listemp->dateEmprunt.jour, listemp->dateEmprunt.mois, listemp->dateEmprunt.annee);
+		listemp = listemp->suiv;
+	}
 }
 
-void afficherReservation(Reservation res) {
-	printf("%d\t\t%d\t\t%d\n", res.idReservation, res.idAdherent, res.idJeu);
+void afficherReservations(Reservations listres, int nbres) {
+	printf("Nb Adherents : %d\n", nbres);
+	printf("ID Reservation\tID Adherent\tID Jeu\n");
+
+	while (listres != NULL) {
+		printf("%d %d %d\n", listres->idReservation, listres->idAdherent,listres->idJeu);
+		listres = listres->suiv;
+	}
 }
 
 void testChargementFichiers(void) {
-	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichiers/adherents.don";
+	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichiers/adherents.don", 
+	*ficemprunts = "../Fichiers/emprunts.don", *ficreservations = "../Fichiers/reservations.don";
 	Jeu **tjeux;
 	Adherent** tadherents;
+	Emprunts listempts;
+	Reservations listres;
 
-	int nbjeux, nbadherents, i;
+	Emprunt emp;
+	FILE* fic;
+
+	listempts = initialiserEmprunts();
+	listres = intialiserReservations();
+
+	int nbjeux = 0, nbadherents = 0, nbempts = 0, nbres = 0;
 
 	tjeux = chargementJeux(ficjeux, &nbjeux);
 	tadherents = chargementAdherents(ficadherents, &nbadherents);
+	listempts = chargementEmprunts(ficemprunts, listempts, &nbempts);
+	listres = chargementReservations(ficreservations, listres, &nbres);
 
 	afficherJeux(tjeux, nbjeux);
 	afficherAdherents(tadherents, nbadherents);
+	afficherEmprunts(listempts, nbempts);
+	afficherReservations(listres, nbres);
 
 	free(tjeux);
 	free(tadherents);
 }
 
 int main(int argc, char *argv[]) {
-	//testChargementFichiers();
-	programme();
+	testChargementFichiers();
+	//programme();
 
 	return EXIT_SUCCESS;
 }
