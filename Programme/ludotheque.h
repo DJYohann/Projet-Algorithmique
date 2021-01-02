@@ -43,6 +43,7 @@ typedef struct reservation {
 	int idReservation;
 	int idAdherent;
 	int idJeu;
+	Date dateReservation;
 	struct reservation *suiv;
 } Reservation, *Reservations;
 
@@ -68,7 +69,7 @@ Reservations chargementReservations(char *nomFic, Reservations listres, int *nbr
 
 
 int choixMenu(void);
-void programme(void);
+void application(void);
 
 /* Fonctions tests */
 

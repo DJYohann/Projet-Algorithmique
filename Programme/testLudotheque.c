@@ -34,18 +34,19 @@ void afficherEmprunts(Emprunts listemp, int nbempts) {
 	printf("ID Emprunt\tID Adherent\tID Jeu\tDate Emprunt\n");
 
 	while (listemp != NULL) {
-		printf("%d\t%d\t%d\t%d/%d/%d\n", listemp->idEmprunt, listemp->idAdherent, listemp->idJeu, 
+		printf("%d\t\t%d\t\t%d\t%d/%d/%d\n", listemp->idEmprunt, listemp->idAdherent, listemp->idJeu, 
 			listemp->dateEmprunt.jour, listemp->dateEmprunt.mois, listemp->dateEmprunt.annee);
 		listemp = listemp->suiv;
 	}
 }
 
 void afficherReservations(Reservations listres, int nbres) {
-	printf("Nb Adherents : %d\n", nbres);
-	printf("ID Reservation\tID Adherent\tID Jeu\n");
+	printf("Nb Reservations : %d\n", nbres);
+	printf("ID Reservation\tID Adherent\tID Jeu\tDate Reservation\n");
 
 	while (listres != NULL) {
-		printf("%d %d %d\n", listres->idReservation, listres->idAdherent,listres->idJeu);
+		printf("%d\t\t%d\t\t%d\t%d/%d/%d\n", listres->idReservation, listres->idAdherent,listres->idJeu,
+			listres->dateReservation.jour, listres->dateReservation.mois, listres->dateReservation.annee);
 		listres = listres->suiv;
 	}
 }
@@ -72,17 +73,21 @@ void testChargementFichiers(void) {
 	listres = chargementReservations(ficreservations, listres, &nbres);
 
 	afficherJeux(tjeux, nbjeux);
+	printf("\n");
 	afficherAdherents(tadherents, nbadherents);
+	printf("\n");
 	afficherEmprunts(listempts, nbempts);
+	printf("\n");
 	afficherReservations(listres, nbres);
+	printf("\n");
 
 	free(tjeux);
 	free(tadherents);
 }
 
 int main(int argc, char *argv[]) {
-	testChargementFichiers();
-	//programme();
+	//testChargementFichiers();
+	application();
 
 	return EXIT_SUCCESS;
 }
