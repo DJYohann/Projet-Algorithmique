@@ -356,15 +356,96 @@ Reservations chargementReservations(char *nomFic, Reservations listres, int *nbr
 }
 
 /* 
-Titre : affichagReservationJeu
-Finalité : afficher la liste de réservation pour un jeu donné
-Paramètre : listres (Reservations) - liste chaînée de structure Reservation
+Titre : rechercheJeu
+Finalité : rechercher un jeu avec le nom et renvoyer son identifiant
+Variable : i (int) - indice du tableau
+Paramètres : tjeux (Jeu**) - 
+		     nomJeu (char*) - 
+		     nbjeux (int) - 
+Retour : idJeu (int) - 
 */
 
-// TODO
-// void affichagReservationJeu (Reservations listres, ) {
-// 	printf("Nom\tPrenom\tJeu\tDate Reservation\n");
-// }
+int rechercheJeu(Jeu *tjeux[], char *nomJeu, int nbjeux) {
+	int i;
+
+	for (i = 0; i < nbjeux; i++) {
+		if (strcmp(tjeux[i]->nom, nomJeu) == 0) {
+			return tjeux[i]->idJeu;
+		}
+	}
+
+	return -1;
+}
+
+/* 
+Titre : rechercheDichoAdherent
+Finalité : rechercher un adhérent avec l'identifiant et renvoyer l'indice 
+Variable : deb (int) - 
+		   mil (int) - 
+		   fin (int) -
+Paramètres : tadh (Adherent**) - 
+             idAdherent (int) - 
+             nbadherents (int) -
+Retour : mil - (int)
+*/
+
+int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents) {
+	int deb = 0, mil, fin = nbadherents - 1;
+
+	while (deb <= fin) {
+		mil = (deb + fin) / 2;
+
+		if (idAdherent == tadh[mil]->idAdherent) {
+			return mil;
+		}
+
+		if (idAdherent <= tadh[mil]->idAdherent) {
+			fin = mil - 1;
+		} else {
+			deb =mil +1;
+		}
+	}
+
+	return deb;
+}
+
+/* 
+Titre : affichagReservationJeu
+Finalité : afficher la liste de réservation pour un jeu donné
+Variables : nomJeu (char*) - 
+            idJeu (int) -
+            pos (int) - 
+Paramètre : listres (Reservations) - liste chaînée de structure Reservation
+            tjeux (Jeu**) -
+            tadh (Adherent**) -
+            nbjeux (int) - 
+            nbadherents (int) -  
+*/
+
+void affichagReservationJeu (Reservations listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents) {
+	char nomJeu[30];
+	int idJeu, pos;
+
+	printf("Nom du jeu : ");
+	fgets(nomJeu, 31, stdin);
+	nomJeu[strlen(nomJeu) - 1] = '\0';
+
+	idJeu = rechercheJeu(tjeux, nomJeu, nbjeux);
+	if (idJeu == -1) {
+		printf("\nJeu non existant\n");
+	} else {
+		printf("\nRéservations pour le jeu : %s\n", nomJeu);
+		printf("Nom\t\tPrenom\t\tDate Reservation\n");
+		while (listres != NULL) {
+			if (idJeu == listres->idJeu) {
+				pos = rechercheDichoAdherent(tadh, listres->idAdherent, nbadherents);
+				printf("%s\t\t%s\t\t%d/%d/%d\n", tadh[pos]->nom, tadh[pos]->prenom, listres->dateReservation.jour, 
+					listres->dateReservation.mois, listres->dateReservation.annee);
+			}
+			listres = listres->suiv;
+		}
+	} 
+}
 
 /* 
 Titre : choixMenu 
@@ -399,7 +480,7 @@ int choixMenu(void) {
 /* 
 Titre : application
 Finalité : application de la gestion de prêts de jeux de la ludothèque
-Variables :  
+Variables : 
 */ 
 
 void application(void) {
@@ -429,7 +510,7 @@ void application(void) {
 				
 				break;
 			case 3: 
-				
+				affichagReservationJeu(listres, tjeux, tadherents, nbjeux, nbadherents);
 				break;
 			case 4: 
 				

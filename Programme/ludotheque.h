@@ -67,6 +67,9 @@ Reservations insererEnTeteRes(Reservations listres, Reservation res);
 Reservations insererRes (Reservations listres, Reservation res);
 Reservations chargementReservations(char *nomFic, Reservations listres, int *nbres);
 
+int rechercheJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
+int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
+void affichagReservationJeu (Reservations listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents);
 
 int choixMenu(void);
 void application(void);
