@@ -135,16 +135,14 @@ Adherent** chargementAdherents(char *nomFic, int *nbadherents) {
 }
 
 /* 
-Titre : intialiserEmprunts
-Finalité : initialiser la liste chaînée des emprunts
-Variable : listemp (Emprunts) - liste chaînée des emprunts
-Retour : listemp (Emprunts) - liste chaînée des emprunts
+Titre : listeEmpruntsVide
+Finalité : créer une liste chaînée de structure Emprunt vide
+Variable : listemp (ListeEmp) - liste chaînée de structure Emprunt
+Retour : listemp (ListeEmp) - liste chaînée de structure Emprunt
 */
 
-Emprunts initialiserEmprunts(void) {
-	Emprunts listemp = NULL;
-
-	return listemp;
+ListeEmp listeEmpruntsVide(void) {
+	return NULL;
 }
 
 /* 
@@ -167,30 +165,25 @@ Emprunt lireEmprunt(FILE* flot) {
 /*
 Titre : insererEnTeteEmp
 Finalité : insérer en tête de liste un emprunt
-Variable : e (Emprunt*) - pointeur sur un maillon de structure Emprunt
-Paramètres : listemp (Emprunts) - liste chaînée de structure Emprunt
+Variable : e (MaillonEmp*) - pointeur sur un maillon de la liste 
+Paramètres : listemp (ListeEmp) - liste chaînée de structure Emprunt
 			 emp (Emprunt) - structure Emprunt
 Retour : e (Emprunt*) - pointeur sur un maillon de structure Emprunt
 */
 
-Emprunts insererEnTeteEmp(Emprunts listemp, Emprunt emp) {
-	Emprunt *e;
+ListeEmp insererEnTeteEmp(ListeEmp listemp, Emprunt emp) {
+	MaillonEmp *m;
 
-	e = (Emprunt*)malloc(sizeof(Emprunt));
-	if (e == NULL) {
+	m = (MaillonEmp*)malloc(sizeof(MaillonEmp));
+	if (m == NULL) {
 		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
 		exit(1);
 	}
 
-	e->idEmprunt = emp.idEmprunt;
-	e->idAdherent = emp.idAdherent;
-	e->idJeu = emp.idJeu;
-	e->dateEmprunt.jour = emp.dateEmprunt.jour;
-	e->dateEmprunt.mois = emp.dateEmprunt.mois;
-	e->dateEmprunt.annee = emp.dateEmprunt.annee;
-	e->suiv = listemp;
+	m->emp = emp;
+	m->suiv = listemp;
 
-	return e;
+	return m;
 }
 
 /*
@@ -201,18 +194,18 @@ Paramètres : listemp (Emprunts) - liste chaînée de structure Emprunt
 Retour : listemp (Emprunts) - liste chaînée de structure Emprunt
 */
 
-Emprunts insererEmp(Emprunts listemp, Emprunt emp) {
+ListeEmp insererEmp(ListeEmp listemp, Emprunt emp) {
 	if (listemp == NULL) {
 		return insererEnTeteEmp(listemp, emp);
 	}
 
-	if (emp.dateEmprunt.mois < listemp->dateEmprunt.mois) {
+	if (emp.dateEmprunt.mois < (listemp->emp).dateEmprunt.mois) {
 		return insererEnTeteEmp(listemp, emp);
 	}
 
-	if (emp.dateEmprunt.annee == listemp->dateEmprunt.annee && emp.dateEmprunt.mois == listemp->dateEmprunt.mois && emp.dateEmprunt.jour == listemp->dateEmprunt.jour) {
-		return insererEnTeteEmp(listemp, emp);
-	}
+	// if (emp.dateEmprunt.annee == listemp->emp.dateEmprunt.annee && emp.dateEmprunt.mois == listemp->emp.dateEmprunt.mois && emp.dateEmprunt.jour == listemp->emp.dateEmprunt.jour) {
+	// 	return insererEnTeteEmp(listemp, emp);
+	// }
 
 	listemp->suiv = insererEmp(listemp->suiv, emp);
 
@@ -230,7 +223,7 @@ Paramètres : nomFic (char*) - nom du fichier
 Retour : listemp (Emprunts) - liste chaînée de structure Emprunt
 */
 
-Emprunts chargementEmprunts(char *nomFic, Emprunts listemp, int *nbemp) {
+ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp) {
 	Emprunt emp;
 	FILE* fic;
 
@@ -258,10 +251,8 @@ Variable : listres (Reservations) - liste chaînée de structure Reservation
 Retour : listres (Reservations) - liste chaînée de structure Reservation
 */
 
-Reservations intialiserReservations(void) {
-	Reservations listres = NULL;
-
-	return listres;
+ListeRes listeReservationsVide(void) {
+	return NULL;
 }
 
 /* 
@@ -290,24 +281,19 @@ Paramètres : listres (Reservations) - liste chaînée de structure Reservation
 Retour : r (Reservation*) - pointeur sur maillon de structure Reservation
 */
 
-Reservations insererEnTeteRes(Reservations listres, Reservation res) {
-	Reservation *r;
+ListeRes insererEnTeteRes(ListeRes listres, Reservation res) {
+	MaillonRes *m;
 
-	r = (Reservation*)malloc(sizeof(Reservation));
-	if (r == NULL) {
+	m = (MaillonRes*)malloc(sizeof(MaillonRes));
+	if (m == NULL) {
 		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
 		exit(1);
 	}
 
-	r->idReservation = res.idReservation;
-	r->idAdherent = res.idAdherent;
-	r->idJeu = res.idJeu;
-	r->dateReservation.jour = res.dateReservation.jour;
-	r->dateReservation.mois = res.dateReservation.mois;
-	r->dateReservation.annee = res.dateReservation.annee;
-	r->suiv = listres;
+	m->res = res;
+	m->suiv = listres;
 
-	return r;
+	return m;
 }
 
 /*
@@ -334,7 +320,7 @@ Paramètres : nomFic (char*) - nom du fichier
 Retour : listres (Reservations) - liste chaînée de structure Reservation
 */
 
-Reservations chargementReservations(char *nomFic, Reservations listres, int *nbres) {
+ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres) {
 	Reservation res;
 	FILE* fic;
 
@@ -422,7 +408,7 @@ Paramètre : listres (Reservations) - liste chaînée de structure Reservation
             nbadherents (int) -  
 */
 
-void affichagReservationJeu (Reservations listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents) {
+void affichagReservationJeu (ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents) {
 	char nomJeu[30];
 	int idJeu, pos;
 
@@ -437,10 +423,10 @@ void affichagReservationJeu (Reservations listres, Jeu *tjeux[], Adherent *tadh[
 		printf("\nRéservations pour le jeu : %s\n", nomJeu);
 		printf("Nom\t\tPrenom\t\tDate Reservation\n");
 		while (listres != NULL) {
-			if (idJeu == listres->idJeu) {
-				pos = rechercheDichoAdherent(tadh, listres->idAdherent, nbadherents);
-				printf("%s\t\t%s\t\t%d/%d/%d\n", tadh[pos]->nom, tadh[pos]->prenom, listres->dateReservation.jour, 
-					listres->dateReservation.mois, listres->dateReservation.annee);
+			if (idJeu == listres->res.idJeu) {
+				pos = rechercheDichoAdherent(tadh, listres->res.idAdherent, nbadherents);
+				printf("%s\t\t%s\t\t%d/%d/%d\n", tadh[pos]->nom, tadh[pos]->prenom, listres->res.dateReservation.jour, 
+					listres->res.dateReservation.mois, listres->res.dateReservation.annee);
 			}
 			listres = listres->suiv;
 		}
@@ -489,8 +475,8 @@ void application(void) {
 
 	Jeu **tjeux;
 	Adherent** tadherents;
-	Emprunts listempts = initialiserEmprunts();
-	Reservations listres = intialiserReservations();
+	ListeEmp listempts = listeEmpruntsVide();
+	ListeRes listres = listeReservationsVide();
 
 	int nbjeux = 0, nbadherents = 0, nbempts = 0, nbres = 0, choix;
 	char c;

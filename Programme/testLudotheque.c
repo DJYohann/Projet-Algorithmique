@@ -29,24 +29,32 @@ void afficherAdherents(Adherent** tadherents, int nbadherents) {
 	}
 }
 
-void afficherEmprunts(Emprunts listemp, int nbempts) {
+void afficherEmprunt(Emprunt emp) {
+	printf("%d %d %d %d/%d/%d\n", emp.idEmprunt, emp.idAdherent, emp.idJeu, emp.dateEmprunt.jour, 
+		emp.dateEmprunt.mois, emp.dateEmprunt.annee);
+}
+
+void afficherEmprunts(ListeEmp listemp, int nbempts) {
 	printf("Nb Emprunts : %d\n", nbempts);
 	printf("ID Emprunt\tID Adherent\tID Jeu\tDate Emprunt\n");
 
 	while (listemp != NULL) {
-		printf("%d\t\t%d\t\t%d\t%d/%d/%d\n", listemp->idEmprunt, listemp->idAdherent, listemp->idJeu, 
-			listemp->dateEmprunt.jour, listemp->dateEmprunt.mois, listemp->dateEmprunt.annee);
+		afficherEmprunt(listemp->emp);
 		listemp = listemp->suiv;
 	}
 }
 
-void afficherReservations(Reservations listres, int nbres) {
+void afficherReservation(Reservation res) {
+	printf("%d %d %d %d/%d/%d\n", res.idReservation, res.idAdherent, res.idJeu, res.dateReservation.jour, 
+		res.dateReservation.mois, res.dateReservation.annee);
+}
+
+void afficherReservations(ListeRes listres, int nbres) {
 	printf("Nb Reservations : %d\n", nbres);
 	printf("ID Reservation\tID Adherent\tID Jeu\tDate Reservation\n");
 
 	while (listres != NULL) {
-		printf("%d\t\t%d\t\t%d\t%d/%d/%d\n", listres->idReservation, listres->idAdherent,listres->idJeu,
-			listres->dateReservation.jour, listres->dateReservation.mois, listres->dateReservation.annee);
+		afficherReservation(listres->res);
 		listres = listres->suiv;
 	}
 }
@@ -56,14 +64,11 @@ void testChargementFichiers(void) {
 	*ficemprunts = "../Fichiers/emprunts.don", *ficreservations = "../Fichiers/reservations.don";
 	Jeu **tjeux;
 	Adherent** tadherents;
-	Emprunts listempts;
-	Reservations listres;
+	ListeEmp listempts;
+	ListeRes listres;
 
-	Emprunt emp;
-	FILE* fic;
-
-	listempts = initialiserEmprunts();
-	listres = intialiserReservations();
+	listempts = listeEmpruntsVide();
+	listres = listeReservationsVide();
 
 	int nbjeux = 0, nbadherents = 0, nbempts = 0, nbres = 0;
 
@@ -86,8 +91,8 @@ void testChargementFichiers(void) {
 }
 
 int main(int argc, char *argv[]) {
-	//testChargementFichiers();
-	application();
+	testChargementFichiers();
+	//application();
 
 	return EXIT_SUCCESS;
 }

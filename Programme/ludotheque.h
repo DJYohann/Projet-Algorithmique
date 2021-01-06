@@ -31,21 +31,31 @@ typedef struct {
 	Date dateInscription;  
 } Adherent;
 
-typedef struct emprunt {
+typedef struct {
 	int idEmprunt;
 	int idAdherent;
 	int idJeu;
 	Date dateEmprunt;
-	struct emprunt *suiv;
-} Emprunt ,*Emprunts;
+} Emprunt;
 
-typedef struct reservation {
+typedef struct {
 	int idReservation;
 	int idAdherent;
 	int idJeu;
 	Date dateReservation;
-	struct reservation *suiv;
-} Reservation, *Reservations;
+} Reservation;
+
+/* Listes chaînées */
+
+typedef struct maillonEmp {
+	Emprunt emp;
+	struct maillonEmp *suiv;
+} MaillonEmp ,*ListeEmp;
+
+typedef struct maillonRes {
+	Reservation res;
+	struct maillonRes *suiv;
+} MaillonRes, *ListeRes;
 
 /* Fonctions */
 
@@ -56,20 +66,20 @@ Adherent lireAdherent(FILE* flot);
 Adherent** chargementAdherents(char *nomFic, int *nbadherents);
 
 Emprunt lireEmprunt(FILE* flot);
-Emprunts initialiserEmprunts(void);
-Emprunts insererEnTeteEmp(Emprunts listemp, Emprunt emp);
-Emprunts insererEmp(Emprunts listemp, Emprunt emp);
-Emprunts chargementEmprunts(char *nomFic, Emprunts listemp, int *nbemp);
+ListeEmp listeEmpruntsVide(void);
+ListeEmp insererEnTeteEmp(ListeEmp listemp, Emprunt emp);
+ListeEmp insererEmp(ListeEmp listemp, Emprunt emp);
+ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp);
 
 Reservation lireReservation(FILE* flot);
-Reservations intialiserReservations(void);
-Reservations insererEnTeteRes(Reservations listres, Reservation res);
-Reservations insererRes (Reservations listres, Reservation res);
-Reservations chargementReservations(char *nomFic, Reservations listres, int *nbres);
+ListeRes listeReservationsVide(void);
+ListeRes insererEnTeteRes(ListeRes listres, Reservation res);
+ListeRes insererRes (ListeRes listres, Reservation res);
+ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres);
 
 int rechercheJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
 int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
-void affichagReservationJeu (Reservations listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents);
+void affichagReservationJeu (ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents);
 
 int choixMenu(void);
 void application(void);
@@ -80,7 +90,9 @@ void afficherJeu(Jeu jeu);
 void afficherJeux(Jeu **tjeux, int nbjeux);
 void afficherAdherent(Adherent adh);
 void afficherAdherents(Adherent** tadherents, int nbadherents);
-void afficherEmprunts(Emprunts listemp, int nbempts);
-void afficherReservations(Reservations listres, int nbres);
+void afficherEmprunt(Emprunt emp);
+void afficherEmprunts(ListeEmp listemp, int nbempts);
+void afficherReservation(Reservation res);
+void afficherReservations(ListeRes listres, int nbres);
 
 void testChargementFichiers(void);
