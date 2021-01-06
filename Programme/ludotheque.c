@@ -433,13 +433,13 @@ void triTabJeux(Jeu *tabJeux[], int tailleLogJeux) {
 	int taille;
     int pge;
 	
-	// Tri par type
-	taille = tailleLogJeux;
+	// Tri par type 
+    taille = tailleLogJeux;
 	while (taille > 1) {
 		pge = type(tabJeux, taille);
 		echanger(tabJeux, pge, taille - 1);
 		taille--;
-	} 
+	}
 
 	// Tri alphabétique par type
 	taille = tailleLogJeux;
@@ -448,6 +448,20 @@ void triTabJeux(Jeu *tabJeux[], int tailleLogJeux) {
 		echanger(tabJeux, pge, taille - 1);
 		taille--;
 	} 
+}
+
+void afficherJeuDispo(Jeu jeu) {
+	printf("%s\t%s\t%d\n", jeu.nom, jeu.type, jeu.nbExemp);
+}
+
+void affichageJeuxDispos(Jeu *tabJeux[], int tailleLogJeux) {
+	int i;
+
+	printf("Nom\t\tType\tNb Exemplaire\n");
+
+	for (i = 0; i < tailleLogJeux; i++) {
+		afficherJeuDispo(*tabJeux[i]);
+	}
 }
 
 /* 
@@ -463,7 +477,7 @@ Paramètre : listres (Reservations) - liste chaînée de structure Reservation
             nbadherents (int) -  
 */
 
-void affichagReservationJeu (ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents) {
+void affichagReservationJeu(ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents) {
 	char nomJeu[30];
 	int idJeu, pos;
 
@@ -541,11 +555,13 @@ void application(void) {
 	listempts = chargementEmprunts(ficemprunts, listempts, &nbempts);
 	listres = chargementReservations(ficreservations, listres, &nbres);
 
+	triTabJeux(tjeux, nbjeux);
+
 	choix = choixMenu();
 	while (choix != 8) {
 		switch(choix) {
 			case 1: 
-				
+				affichageJeuxDispos(tjeux, nbjeux);
 				break;
 			case 2: 
 				

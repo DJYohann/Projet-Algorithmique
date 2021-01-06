@@ -93,8 +93,8 @@ void testChargementFichiers(void) {
 }
 
 int main(int argc, char *argv[]) {
-	testChargementFichiers();
-	//application();
+	//testChargementFichiers();
+	application();
 
 	return EXIT_SUCCESS;
 }

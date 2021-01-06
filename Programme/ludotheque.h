@@ -81,7 +81,13 @@ ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres);
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
 int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
 
+int type(Jeu *tabJeux[], int tailleLogJeux);
+int nom(Jeu *tabJeux[], int tailleLogJeux);
+void echanger(Jeu *tabJeux[], int i, int j);
 void triTabJeux(Jeu *tabJeux[], int tailleLogJeux);
+
+void afficherJeuDispo(Jeu jeu);
+void affichageJeuxDispos(Jeu *tabJeux[], int tailleLogJeux);
 
 void affichagReservationJeu (ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents);
 
