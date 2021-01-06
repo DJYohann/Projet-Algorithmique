@@ -421,6 +421,10 @@ int nom(Jeu *tabJeux[], int tailleLogJeux) {
 	return pge;
 }
 
+/* 
+Titre : echanger
+*/
+
 void echanger(Jeu *tabJeux[], int i, int j) {
 	Jeu *tmp;
 
