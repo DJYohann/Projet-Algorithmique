@@ -77,6 +77,8 @@ void testChargementFichiers(void) {
 	listempts = chargementEmprunts(ficemprunts, listempts, &nbempts);
 	listres = chargementReservations(ficreservations, listres, &nbres);
 
+	triTabJeux(tjeux, nbjeux);
+
 	afficherJeux(tjeux, nbjeux);
 	printf("\n");
 	afficherAdherents(tadherents, nbadherents);

@@ -395,6 +395,61 @@ int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents) {
 	return deb;
 }
 
+int type(Jeu *tabJeux[], int tailleLogJeux) {
+	int i, pge = 0;
+
+	for (i = 0; i < tailleLogJeux; i++) {
+		if (strcmp(tabJeux[pge]->type, tabJeux[i]->type) < 0) {
+			pge = i;
+		}
+	}
+
+	return pge;
+}
+
+int nom(Jeu *tabJeux[], int tailleLogJeux) {
+	int i, pge = 0;
+
+	for (i = 0; i < tailleLogJeux; i++) {
+		if (strcmp(tabJeux[pge]->type, tabJeux[i]->type) == 0) {
+			if (strcmp(tabJeux[pge]->nom, tabJeux[i]->nom) < 0) {
+				pge = i;
+			}
+		}
+	}
+
+	return pge;
+}
+
+void echanger(Jeu *tabJeux[], int i, int j) {
+	Jeu *tmp;
+
+	tmp = tabJeux[i];
+    tabJeux[i] = tabJeux[j];
+    tabJeux[j] = tmp;
+}
+
+void triTabJeux(Jeu *tabJeux[], int tailleLogJeux) {
+	int taille;
+    int pge;
+	
+	// Tri par type
+	taille = tailleLogJeux;
+	while (taille > 1) {
+		pge = type(tabJeux, taille);
+		echanger(tabJeux, pge, taille - 1);
+		taille--;
+	} 
+
+	// Tri alphabétique par type
+	taille = tailleLogJeux;
+	while (taille > 1) {
+		pge = nom(tabJeux, taille);
+		echanger(tabJeux, pge, taille - 1);
+		taille--;
+	} 
+}
+
 /* 
 Titre : affichagReservationJeu
 Finalité : afficher la liste de réservation pour un jeu donné

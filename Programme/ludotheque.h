@@ -6,7 +6,8 @@
 
 /* Énumérations */
 
-typedef enum {FAUX, VRAI} bool;
+typedef enum {FAUX, VRAI} Bool;
+typedef enum {carte, construction, logique, plateau, tuile}Type;
 
 /* Structures */
 
@@ -79,6 +80,9 @@ ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres);
 
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
 int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
+
+void triTabJeux(Jeu *tabJeux[], int tailleLogJeux);
+
 void affichagReservationJeu (ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents);
 
 int choixMenu(void);
