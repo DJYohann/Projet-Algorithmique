@@ -77,7 +77,7 @@ ListeRes insererEnTeteRes(ListeRes listres, Reservation res);
 ListeRes insererRes (ListeRes listres, Reservation res);
 ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres);
 
-int rechercheJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
+int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
 int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
 void affichagReservationJeu (ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents);
 

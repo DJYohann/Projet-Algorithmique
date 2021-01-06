@@ -165,10 +165,10 @@ Emprunt lireEmprunt(FILE* flot) {
 /*
 Titre : insererEnTeteEmp
 Finalité : insérer en tête de liste un emprunt
-Variable : e (MaillonEmp*) - pointeur sur un maillon de la liste 
+Variable : m (MaillonEmp*) - pointeur sur un maillon de la liste 
 Paramètres : listemp (ListeEmp) - liste chaînée de structure Emprunt
 			 emp (Emprunt) - structure Emprunt
-Retour : e (Emprunt*) - pointeur sur un maillon de structure Emprunt
+Retour : m (MaillonEmp*) - pointeur sur un maillon de la liste
 */
 
 ListeEmp insererEnTeteEmp(ListeEmp listemp, Emprunt emp) {
@@ -189,9 +189,9 @@ ListeEmp insererEnTeteEmp(ListeEmp listemp, Emprunt emp) {
 /*
 Titre : insererEmp
 Finalité : insérer dans la liste un emprunt
-Paramètres : listemp (Emprunts) - liste chaînée de structure Emprunt
+Paramètres : listemp (ListeEmp) - liste chaînée de structure Emprunt
              emp (Emprunt) - structure Emprunt
-Retour : listemp (Emprunts) - liste chaînée de structure Emprunt
+Retour : listemp (ListeEmp) - liste chaînée de structure Emprunt
 */
 
 ListeEmp insererEmp(ListeEmp listemp, Emprunt emp) {
@@ -218,9 +218,9 @@ Finalité : charger en mémoire le fichier des emprunts
 Variables : emp (Emprunt) - structure Emprunt
             fic (FILE*) - fichier des emprunts
 Paramètres : nomFic (char*) - nom du fichier 
-			 listemp (Emprunts) - liste chaînée de structure Emprunt
+			 listemp (ListeEmp) - liste chaînée de structure Emprunt
 			 nbemp (int*) - nombre d'emprunts
-Retour : listemp (Emprunts) - liste chaînée de structure Emprunt
+Retour : listemp (ListeEmp) - liste chaînée de structure Emprunt
 */
 
 ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp) {
@@ -245,10 +245,10 @@ ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp) {
 }
 
 /* 
-Titre : intialiserReservations
-Finalité : initialiser la liste chaînée des réservations
-Variable : listres (Reservations) - liste chaînée de structure Reservation
-Retour : listres (Reservations) - liste chaînée de structure Reservation
+Titre : listeReservationsVide
+Finalité : créer une liste chaînée de structure Reservation vide
+Variable : listres (ListeRes) - liste chaînée de structure Reservation
+Retour : listres (ListeRes) - liste chaînée de structure Reservation
 */
 
 ListeRes listeReservationsVide(void) {
@@ -275,10 +275,10 @@ Reservation lireReservation(FILE* flot) {
 /*
 Titre : insererEnTeteRes
 Finalité : insérer en tête de liste une réservation
-Variable : r (Reservation*) - pointeur sur maillon de structure Reservation
-Paramètres : listres (Reservations) - liste chaînée de structure Reservation
+Variable : m (MaillonRes*) - pointeur sur un maillon de la liste 
+Paramètres : listres (ListeRes) - liste chaînée de structure Reservation
  			 res (Reservation) - structure Reservation
-Retour : r (Reservation*) - pointeur sur maillon de structure Reservation
+Retour : m (MaillonRes*) - pointeur sur un maillon de la liste 
 */
 
 ListeRes insererEnTeteRes(ListeRes listres, Reservation res) {
@@ -299,13 +299,13 @@ ListeRes insererEnTeteRes(ListeRes listres, Reservation res) {
 /*
 Titre : insererRes
 Finalité : insérer dans la liste une réservation
-Paramètres : listemp (Reservations) - liste chaînée de structure Reservation
+Paramètres : listemp (ListeRes) - liste chaînée de structure Reservation
              emp (Reservation) - structure Reservation
-Retour : listemp (Reservations) - liste chaînée de structure Reservation
+Retour : listemp (ListeRes) - liste chaînée de structure Reservation
 */
 
 // TODO
-// Reservations insererRes (Reservations listres, Reservation res) {
+// ListeRes insererRes (ListeRes listres, Reservation res) {
 
 // }
 
@@ -315,9 +315,9 @@ Finalité : charger en mémoire le fichier des réservations
 Variables : res (Reservation) - structure Reservation
             fic (FILE*) - fichier des réservations
 Paramètres : nomFic (char*) - nom du fichier 
-			 listres (Reservations) - liste chaînée de structure Reservation
+			 listres (ListeRes) - liste chaînée de structure Reservation
 			 nbemp (int*) - nombre de réservations
-Retour : listres (Reservations) - liste chaînée de structure Reservation
+Retour : listres (ListeRes) - liste chaînée de structure Reservation
 */
 
 ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres) {
@@ -342,7 +342,7 @@ ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres) {
 }
 
 /* 
-Titre : rechercheJeu
+Titre : rechercheIdJeu
 Finalité : rechercher un jeu avec le nom et renvoyer son identifiant
 Variable : i (int) - indice du tableau
 Paramètres : tjeux (Jeu**) - 
@@ -351,7 +351,7 @@ Paramètres : tjeux (Jeu**) -
 Retour : idJeu (int) - 
 */
 
-int rechercheJeu(Jeu *tjeux[], char *nomJeu, int nbjeux) {
+int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux) {
 	int i;
 
 	for (i = 0; i < nbjeux; i++) {
@@ -416,7 +416,7 @@ void affichagReservationJeu (ListeRes listres, Jeu *tjeux[], Adherent *tadh[], i
 	fgets(nomJeu, 31, stdin);
 	nomJeu[strlen(nomJeu) - 1] = '\0';
 
-	idJeu = rechercheJeu(tjeux, nomJeu, nbjeux);
+	idJeu = rechercheIdJeu(tjeux, nomJeu, nbjeux);
 	if (idJeu == -1) {
 		printf("\nJeu non existant\n");
 	} else {
