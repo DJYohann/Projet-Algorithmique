@@ -98,5 +98,4 @@ void afficherEmprunt(Emprunt emp);
 void afficherEmprunts(ListeEmp listemp, int nbempts);
 void afficherReservation(Reservation res);
 void afficherReservations(ListeRes listres, int nbres);
-
 void testChargementFichiers(void);
