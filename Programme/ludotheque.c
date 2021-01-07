@@ -236,23 +236,16 @@ Paramètres : listemp (ListeEmp) - liste chaînée de structure Emprunt
 Retour : listemp (ListeEmp) - liste chaînée de structure Emprunt
 */
 
-ListeEmp insererEmp(ListeEmp listemp, Emprunt emp) {
-	if (listemp == NULL) {
-		return insererEnTeteEmp(listemp, emp);
-	}
-
-	if (emp.dateEmprunt.mois < (listemp->emp).dateEmprunt.mois) {
-		return insererEnTeteEmp(listemp, emp);
-	}
-
-	// if (emp.dateEmprunt.annee == listemp->emp.dateEmprunt.annee && emp.dateEmprunt.mois == listemp->emp.dateEmprunt.mois && emp.dateEmprunt.jour == listemp->emp.dateEmprunt.jour) {
-	// 	return insererEnTeteEmp(listemp, emp);
-	// }
-
-	listemp->suiv = insererEmp(listemp->suiv, emp);
-
-	return listemp;
-}
+// TODO
+// ListeEmp insererEmp(ListeEmp listemp, Emprunt emp) {
+// 	if (listemp == NULL) {
+// 		return insererEnTeteEmp(listemp, emp);
+// 	}
+//
+// 	listemp->suiv = insererEmp(listemp->suiv, emp);
+//
+// 	return listemp;
+// }
 
 /*
 Titre : chargementEmprunts
@@ -277,7 +270,7 @@ ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp) {
 
 	emp = lireEmprunt(fic);
 	while(!feof(fic)) {
-		listemp = insererEmp(listemp, emp);
+		listemp = insererEnTeteEmp(listemp, emp);
 		(*nbemp)++;
 		emp = lireEmprunt(fic);
 	}
@@ -387,9 +380,9 @@ ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres) {
 Titre : rechercheIdJeu
 Finalité : rechercher un jeu avec le nom et renvoyer son identifiant
 Variable : i (int) - indice du tableau
-Paramètres : tjeux (Jeu**) -
-		     nomJeu (char*) -
-		     nbjeux (int) -
+Paramètres : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
+		     	   nomJeu (char*) -
+		         nbjeux (int) - nombre de jeux
 Retour : idJeu (int) -
 */
 
@@ -409,8 +402,8 @@ int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux) {
 Titre : rechercheDichoAdherent
 Finalité : rechercher un adhérent avec l'identifiant et renvoyer l'indice
 Variable : deb (int) -
-		   mil (int) -
-		   fin (int) -
+		       mil (int) -
+		       fin (int) -
 Paramètres : tadh (Adherent**) -
              idAdherent (int) -
              nbadherents (int) -
@@ -430,44 +423,13 @@ int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents) {
 		if (idAdherent <= tadh[mil]->idAdherent) {
 			fin = mil - 1;
 		} else {
-			deb =mil +1;
+			deb = mil + 1;
 		}
 	}
 
 	return deb;
 }
 
-/*
-Titre : rechercheDichoJeu
-Finalité : rechercher un jeu avec l'identifiant et renvoyer l'indice
-Variable : deb (int) -
-		   mil (int) -
-		   fin (int) -
-Paramètres : tadh (Adherent**) -
-             idAdherent (int) -
-             nbadherents (int) -
-Retour : mil - (int)
-*/
-
-int rechercheDichoJeu(Jeu *tjeux[], int idJeu, int nbjeux) {
-	int deb = 0, mil, fin = nbjeux - 1;
-
-	while (deb <= fin) {
-		mil = (deb + fin) / 2;
-
-		if (idJeu == tjeux[mil]->idJeu) {
-			return mil;
-		}
-
-		if (idJeu <= tjeux[mil]->idJeu) {
-			fin = mil - 1;
-		} else {
-			deb = mil + 1;
-		}
-	}
-
-	return -1;
-}
 /*
 Titre : type
 Finalité :
@@ -521,8 +483,8 @@ void echanger(Jeu *tabJeux[], int i, int j) {
 	Jeu *tmp;
 
 	tmp = tabJeux[i];
-    tabJeux[i] = tabJeux[j];
-    tabJeux[j] = tmp;
+  tabJeux[i] = tabJeux[j];
+  tabJeux[j] = tmp;
 }
 
 /*
@@ -564,11 +526,12 @@ void affichageEmpruntsCours (ListeEmp listempts, Jeu *tjeux[], Adherent *tadhere
 
 	printf("Nom du Jeu emprunté\t\tIdentité\t\t\tDate d'emprunt\n");
 	while (listempts != NULL) {
-		posJeu = rechercheDichoJeu(tjeux, listempts->emp.idJeu, nbjeux);
-		posAdh = rechercheDichoAdherent(tadherents, listempts->emp.idAdherent, nbadherents);
-		printf("%d %d\n", posJeu, posAdh);
+		posJeu =
+		posAdh = rechercheDichoAdherent(tadherents, listemp->emp.idJeu, nbjeux);
+
 		printf("%s\t\t%s\t%s\t\t%d/%d/%d\n", tjeux[posJeu]->nom, tadherents[posAdh]->nom, tadherents[posAdh]->prenom,
 		listempts->emp.dateEmprunt.jour, listempts->emp.dateEmprunt.mois, listempts->emp.dateEmprunt.annee);
+
 		listempts = listempts->suiv;
 	}
 }
@@ -698,12 +661,19 @@ void application(void) {
 	while (choix != 8) {
 		switch(choix) {
 			case 1:
+				afficherJeux(tjeux, nbjeux);
+				afficherEmprunts(listempts, nbempts);
 				affichageJeuxDispos(tjeux, nbjeux);
 				break;
 			case 2:
+				afficherJeux(tjeux, nbjeux);
+				afficherAdherents(tadherents, nbadherents);
+				afficherEmprunts(listempts, nbempts);
 				affichageEmpruntsCours(listempts, tjeux, tadherents, nbjeux, nbadherents);
 				break;
 			case 3:
+				afficherJeux(tjeux, nbjeux);
+				afficherReservations(listres, nbres);
 				affichageReservationJeu(listres, tjeux, tadherents, nbjeux, nbadherents);
 				break;
 			case 4:

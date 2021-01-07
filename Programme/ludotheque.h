@@ -81,7 +81,6 @@ ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres);
 
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
 int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
-int rechercheDichoJeu(Jeu *tjeux[], int idJeu, int nbjeux);
 
 int type(Jeu *tabJeux[], int tailleLogJeux);
 int nom(Jeu *tabJeux[], int tailleLogJeux);

@@ -92,42 +92,8 @@ void testChargementFichiers(void) {
 	free(tadherents);
 }
 
-// TODO
-// void testCreation(void) {
-// 	char *ficadherents = "../Fichiers/adherents.don";
-// 	Adherent** tadherents, tnouvadherents;
-// 	int nbadherents = 0;
-//
-// 	Adherent adh;
-//
-// 	tadherents = chargementAdherents(ficadherents, &nbadherents);
-//
-// 	afficherAdherents(tadherents, nbadherents);
-//
-// 	adh = creationAdherent(nbadherents);
-// 	nbadherents++;
-//
-// 	tnouvadherents = (Adherent**)realloc(tadherents, nbadherents * sizeof(Adherent));
-// 	if (tadherents == NULL) {
-// 		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
-// 		exit(1);
-// 	}
-//
-// 	tnouvadherents[nbadherents + 1] = (Adherent*)malloc(sizeof(Adherent));
-// 	if (tadherents[nbadherents + 1] == NULL) {
-// 		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
-// 		exit(1);
-// 	}
-// 	*tnouvadherents[nbadherents + 1] = adh;
-//
-// 	afficherAdherents(tnouvadherents, nbadherents);
-//
-// 	free(tnouvadherents);
-// }
-
 int main(int argc, char *argv[]) {
 	//testChargementFichiers();
-	//testCreation();
 	application();
 
 	return EXIT_SUCCESS;
