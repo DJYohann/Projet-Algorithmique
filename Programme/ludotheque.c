@@ -1,6 +1,6 @@
 #include "ludotheque.h"
 
-/* 
+/*
 Titre : lireJeu
 Finalité : lire un jeu dans un flot donné
 Variable : jeu (Jeu) - structure Jeu
@@ -19,14 +19,14 @@ Jeu lireJeu(FILE* flot) {
 	return jeu;
 }
 
-/* 
+/*
 Titre : chargementJeux
 Finalité : charger en mémoire le fichier des jeux
 Variables : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
             jeu (Jeu) - structure Jeu
             fic (FILE*) - fichier de jeux
-            i (int) - indice du tableau 
-Paramètres : nomFic (char*) - nom du fichier 
+            i (int) - indice du tableau
+Paramètres : nomFic (char*) - nom du fichier
 			 nbjeux (int*) - nombre de jeux
 Retours : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
 		  nbjeux (int*) - nombre de jeux
@@ -58,13 +58,14 @@ Jeu** chargementJeux(char *nomFic, int *nbjeux) {
 			fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
 			exit(1);
 		}
-		jeu = lireJeu(fic);	
+		jeu = lireJeu(fic);
 		*tjeux[i] = jeu;
 	}
-	
+
 	fclose(fic);
 	return tjeux;
 }
+
 
 /*
 Titre : lireAdherent
@@ -87,14 +88,55 @@ Adherent lireAdherent(FILE* flot) {
 	return adh;
 }
 
-/* 
+/*
+Titre : creationAdherent
+Auteur : Etienne
+Finalité : créer un nouvel adhérent
+Variable : adh (Adherent) - structure Adherent
+Paramètre : nbadherents (int) - nombre d'adherents
+Retour : adh (Adherent) - structure Adherent
+*/
+
+Adherent creationAdherent(int nbadherents) {
+	Adherent nouv;
+
+	nouv.idAdherent = nbadherents + 1;
+
+	printf("Civilité : ");
+	scanf("%s%*c", nouv.civilite);
+	while (strcmp(nouv.civilite, "Mr") !=0 && strcmp(nouv.civilite, "Mme") !=0) {
+		printf("Erreur, retapez.\n");
+		printf("Civilité : ");
+		scanf("%s%*c", nouv.civilite);
+	}
+
+	printf("Nom : ");
+	fgets(nouv.nom, 30, stdin);
+	nouv.nom[strlen(nouv.nom) - 1] = '\0';
+
+	printf("Prénom : ");
+	fgets(nouv.prenom, 30, stdin);
+	nouv.prenom[strlen(nouv.prenom) - 1] = '\0';
+
+	printf("Date d'inscription \n");
+	printf("Jour : ");
+	scanf("%d%*c", &nouv.dateInscription.jour);
+	printf("Mois : ");
+	scanf("%d%*c", &nouv.dateInscription.mois);
+	printf("Année : ");
+	scanf("%d%*c", &nouv.dateInscription.annee);
+
+	return nouv;
+}
+
+/*
 Titre : chargementAdherents
 Finalité : charger en mémoire le fichier des adhérents
 Variables : tadherents (Adherent**) - tableau de pointeur sur la structure Adherent
             adh (Adherent) - structure Adherent
             fic (FILE*) - fichier des adhérents
-            i (int) - indice du tableau 
-Paramètres : nomFic (char*) - nom du fichier 
+            i (int) - indice du tableau
+Paramètres : nomFic (char*) - nom du fichier
 			 nbadherents (int*) - nombre d'adhérents
 Retours : tjeux (Jeu**) - tableau de pointeur sur la structure Adherent
 		  nbadherents (int*) - nombre d'adhérents
@@ -126,7 +168,7 @@ Adherent** chargementAdherents(char *nomFic, int *nbadherents) {
 			fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
 			exit(1);
 		}
-		adh = lireAdherent(fic);	
+		adh = lireAdherent(fic);
 		*tadherents[i] = adh;
 	}
 
@@ -134,7 +176,7 @@ Adherent** chargementAdherents(char *nomFic, int *nbadherents) {
 	return tadherents;
 }
 
-/* 
+/*
 Titre : listeEmpruntsVide
 Finalité : créer une liste chaînée de structure Emprunt vide
 Variable : listemp (ListeEmp) - liste chaînée de structure Emprunt
@@ -145,7 +187,7 @@ ListeEmp listeEmpruntsVide(void) {
 	return NULL;
 }
 
-/* 
+/*
 Titre : lireEmprunt
 Finalité : lire un emprunt dans un flot donné
 Variable : emp (Emprunt) - structure Emprunt
@@ -156,7 +198,7 @@ Retour : emp (Emprunt) - structure d'Emprunt
 Emprunt lireEmprunt(FILE* flot) {
 	Emprunt emp;
 
-	fscanf(flot, "%d %d %d %d/%d/%d", &emp.idEmprunt, &emp.idAdherent, &emp.idJeu, 
+	fscanf(flot, "%d %d %d %d/%d/%d", &emp.idEmprunt, &emp.idAdherent, &emp.idJeu,
 		&emp.dateEmprunt.jour, &emp.dateEmprunt.mois, &emp.dateEmprunt.annee);
 
 	return emp;
@@ -165,7 +207,7 @@ Emprunt lireEmprunt(FILE* flot) {
 /*
 Titre : insererEnTeteEmp
 Finalité : insérer en tête de liste un emprunt
-Variable : m (MaillonEmp*) - pointeur sur un maillon de la liste 
+Variable : m (MaillonEmp*) - pointeur sur un maillon de la liste
 Paramètres : listemp (ListeEmp) - liste chaînée de structure Emprunt
 			 emp (Emprunt) - structure Emprunt
 Retour : m (MaillonEmp*) - pointeur sur un maillon de la liste
@@ -217,7 +259,7 @@ Titre : chargementEmprunts
 Finalité : charger en mémoire le fichier des emprunts
 Variables : emp (Emprunt) - structure Emprunt
             fic (FILE*) - fichier des emprunts
-Paramètres : nomFic (char*) - nom du fichier 
+Paramètres : nomFic (char*) - nom du fichier
 			 listemp (ListeEmp) - liste chaînée de structure Emprunt
 			 nbemp (int*) - nombre d'emprunts
 Retour : listemp (ListeEmp) - liste chaînée de structure Emprunt
@@ -244,7 +286,7 @@ ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp) {
 	return listemp;
 }
 
-/* 
+/*
 Titre : listeReservationsVide
 Finalité : créer une liste chaînée de structure Reservation vide
 Variable : listres (ListeRes) - liste chaînée de structure Reservation
@@ -255,7 +297,7 @@ ListeRes listeReservationsVide(void) {
 	return NULL;
 }
 
-/* 
+/*
 Titre : lireReservation
 Finalité : lire une réservation dans un flot donné
 Variable : res (Reservation) - structure Reservation
@@ -266,7 +308,7 @@ Retour : res (Reservation) - structure Reservation
 Reservation lireReservation(FILE* flot) {
 	Reservation res;
 
-	fscanf(flot, "%d %d %d %d/%d/%d", &res.idReservation, &res.idAdherent, &res.idJeu, 
+	fscanf(flot, "%d %d %d %d/%d/%d", &res.idReservation, &res.idAdherent, &res.idJeu,
 		&res.dateReservation.jour, &res.dateReservation.mois, &res.dateReservation.annee);
 
 	return res;
@@ -275,10 +317,10 @@ Reservation lireReservation(FILE* flot) {
 /*
 Titre : insererEnTeteRes
 Finalité : insérer en tête de liste une réservation
-Variable : m (MaillonRes*) - pointeur sur un maillon de la liste 
+Variable : m (MaillonRes*) - pointeur sur un maillon de la liste
 Paramètres : listres (ListeRes) - liste chaînée de structure Reservation
  			 res (Reservation) - structure Reservation
-Retour : m (MaillonRes*) - pointeur sur un maillon de la liste 
+Retour : m (MaillonRes*) - pointeur sur un maillon de la liste
 */
 
 ListeRes insererEnTeteRes(ListeRes listres, Reservation res) {
@@ -314,7 +356,7 @@ Titre : chargementReservations
 Finalité : charger en mémoire le fichier des réservations
 Variables : res (Reservation) - structure Reservation
             fic (FILE*) - fichier des réservations
-Paramètres : nomFic (char*) - nom du fichier 
+Paramètres : nomFic (char*) - nom du fichier
 			 listres (ListeRes) - liste chaînée de structure Reservation
 			 nbemp (int*) - nombre de réservations
 Retour : listres (ListeRes) - liste chaînée de structure Reservation
@@ -341,14 +383,14 @@ ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres) {
 	return listres;
 }
 
-/* 
+/*
 Titre : rechercheIdJeu
 Finalité : rechercher un jeu avec le nom et renvoyer son identifiant
 Variable : i (int) - indice du tableau
-Paramètres : tjeux (Jeu**) - 
-		     nomJeu (char*) - 
-		     nbjeux (int) - 
-Retour : idJeu (int) - 
+Paramètres : tjeux (Jeu**) -
+		     nomJeu (char*) -
+		     nbjeux (int) -
+Retour : idJeu (int) -
 */
 
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux) {
@@ -363,14 +405,14 @@ int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux) {
 	return -1;
 }
 
-/* 
+/*
 Titre : rechercheDichoAdherent
-Finalité : rechercher un adhérent avec l'identifiant et renvoyer l'indice 
-Variable : deb (int) - 
-		   mil (int) - 
+Finalité : rechercher un adhérent avec l'identifiant et renvoyer l'indice
+Variable : deb (int) -
+		   mil (int) -
 		   fin (int) -
-Paramètres : tadh (Adherent**) - 
-             idAdherent (int) - 
+Paramètres : tadh (Adherent**) -
+             idAdherent (int) -
              nbadherents (int) -
 Retour : mil - (int)
 */
@@ -395,6 +437,45 @@ int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents) {
 	return deb;
 }
 
+/*
+Titre : rechercheDichoJeu
+Finalité : rechercher un jeu avec l'identifiant et renvoyer l'indice
+Variable : deb (int) -
+		   mil (int) -
+		   fin (int) -
+Paramètres : tadh (Adherent**) -
+             idAdherent (int) -
+             nbadherents (int) -
+Retour : mil - (int)
+*/
+
+int rechercheDichoJeu(Jeu *tjeux[], int idJeu, int nbjeux) {
+	int deb = 0, mil, fin = nbjeux - 1;
+
+	while (deb <= fin) {
+		mil = (deb + fin) / 2;
+
+		if (idJeu == tjeux[mil]->idJeu) {
+			return mil;
+		}
+
+		if (idJeu <= tjeux[mil]->idJeu) {
+			fin = mil - 1;
+		} else {
+			deb = mil + 1;
+		}
+	}
+
+	return -1;
+}
+/*
+Titre : type
+Finalité :
+Variables :
+Paramètres :
+Retour :
+*/
+
 int type(Jeu *tabJeux[], int tailleLogJeux) {
 	int i, pge = 0;
 
@@ -406,6 +487,14 @@ int type(Jeu *tabJeux[], int tailleLogJeux) {
 
 	return pge;
 }
+
+/*
+Titre : nom
+Finalité :
+Variables :
+Paramètres :
+Retour :
+*/
 
 int nom(Jeu *tabJeux[], int tailleLogJeux) {
 	int i, pge = 0;
@@ -421,8 +510,11 @@ int nom(Jeu *tabJeux[], int tailleLogJeux) {
 	return pge;
 }
 
-/* 
+/*
 Titre : echanger
+Finalité :
+Variable :
+Paramètres :
 */
 
 void echanger(Jeu *tabJeux[], int i, int j) {
@@ -433,12 +525,18 @@ void echanger(Jeu *tabJeux[], int i, int j) {
     tabJeux[j] = tmp;
 }
 
+/*
+Titre : triTabJeux
+Finalité :
+Variables :
+Paramètres :
+*/
+
 void triTabJeux(Jeu *tabJeux[], int tailleLogJeux) {
-	int taille;
-    int pge;
-	
-	// Tri par type 
-    taille = tailleLogJeux;
+	int taille, pge;
+
+	// Tri par type
+  taille = tailleLogJeux;
 	while (taille > 1) {
 		pge = type(tabJeux, taille);
 		echanger(tabJeux, pge, taille - 1);
@@ -451,12 +549,47 @@ void triTabJeux(Jeu *tabJeux[], int tailleLogJeux) {
 		pge = nom(tabJeux, taille);
 		echanger(tabJeux, pge, taille - 1);
 		taille--;
-	} 
+	}
 }
+
+/*
+Titre : affichageEmpruntsCours
+Auteur : Loris
+Finalité :
+Paramètres :
+*/
+
+void affichageEmpruntsCours (ListeEmp listempts, Jeu *tjeux[], Adherent *tadherents[], int nbjeux, int nbadherents) {
+	int posJeu, posAdh;
+
+	printf("Nom du Jeu emprunté\t\tIdentité\t\t\tDate d'emprunt\n");
+	while (listempts != NULL) {
+		posJeu = rechercheDichoJeu(tjeux, listempts->emp.idJeu, nbjeux);
+		posAdh = rechercheDichoAdherent(tadherents, listempts->emp.idAdherent, nbadherents);
+		printf("%d %d\n", posJeu, posAdh);
+		printf("%s\t\t%s\t%s\t\t%d/%d/%d\n", tjeux[posJeu]->nom, tadherents[posAdh]->nom, tadherents[posAdh]->prenom,
+		listempts->emp.dateEmprunt.jour, listempts->emp.dateEmprunt.mois, listempts->emp.dateEmprunt.annee);
+		listempts = listempts->suiv;
+	}
+}
+
+/*
+Titre : afficherJeuDispo
+Finalité :
+Paramètres :
+*/
 
 void afficherJeuDispo(Jeu jeu) {
 	printf("%s\t%s\t%d\n", jeu.nom, jeu.type, jeu.nbExemp);
 }
+
+/*
+Titre : affichageJeuxDispos
+Finalité :
+Variable :
+Paramètres :
+*/
+
 
 void affichageJeuxDispos(Jeu *tabJeux[], int tailleLogJeux) {
 	int i;
@@ -468,20 +601,20 @@ void affichageJeuxDispos(Jeu *tabJeux[], int tailleLogJeux) {
 	}
 }
 
-/* 
+/*
 Titre : affichagReservationJeu
 Finalité : afficher la liste de réservation pour un jeu donné
-Variables : nomJeu (char*) - 
+Variables : nomJeu (char*) -
             idJeu (int) -
-            pos (int) - 
+            pos (int) -
 Paramètre : listres (Reservations) - liste chaînée de structure Reservation
             tjeux (Jeu**) -
             tadh (Adherent**) -
-            nbjeux (int) - 
-            nbadherents (int) -  
+            nbjeux (int) -
+            nbadherents (int) -
 */
 
-void affichagReservationJeu(ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents) {
+void affichageReservationJeu(ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents) {
 	char nomJeu[30];
 	int idJeu, pos;
 
@@ -498,16 +631,16 @@ void affichagReservationJeu(ListeRes listres, Jeu *tjeux[], Adherent *tadh[], in
 		while (listres != NULL) {
 			if (idJeu == listres->res.idJeu) {
 				pos = rechercheDichoAdherent(tadh, listres->res.idAdherent, nbadherents);
-				printf("%s\t\t%s\t\t%d/%d/%d\n", tadh[pos]->nom, tadh[pos]->prenom, listres->res.dateReservation.jour, 
+				printf("%s\t\t%s\t\t%d/%d/%d\n", tadh[pos]->nom, tadh[pos]->prenom, listres->res.dateReservation.jour,
 					listres->res.dateReservation.mois, listres->res.dateReservation.annee);
 			}
 			listres = listres->suiv;
 		}
-	} 
+	}
 }
 
-/* 
-Titre : choixMenu 
+/*
+Titre : choixMenu
 Finalité : Afficher le menu et saisir le choix
 Variable : choix (int) - choix du menu
 Retour : choix (int) - choix du menu
@@ -522,28 +655,28 @@ int choixMenu(void) {
 	printf("3 - Affichage réservations pour un jeu\n");
 	printf("4 - Saisie emprunt\n");
 	printf("5 - Saisie réservation\n");
-	printf("6 - Retour d'un jeu\n");	
+	printf("6 - Retour d'un jeu\n");
 	printf("7 - Annulation d'une réservation\n");
 	printf("8 - Quitter\n");
-	
+
 	printf("Choix : ");
 	scanf("%d%*c", &choix);
 	while (choix < 1 || choix > 8) {
 		printf("Choix : ");
 	 	scanf("%d%*c", &choix);
-	} 
+	}
 
 	return choix;
 }
 
-/* 
+/*
 Titre : application
 Finalité : application de la gestion de prêts de jeux de la ludothèque
-Variables : 
-*/ 
+Variables :
+*/
 
 void application(void) {
-	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichiers/adherents.don", 
+	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichiers/adherents.don",
 	*ficemprunts = "../Fichiers/emprunts.don", *ficreservations = "../Fichiers/reservations.don";
 
 	Jeu **tjeux;
@@ -564,29 +697,29 @@ void application(void) {
 	choix = choixMenu();
 	while (choix != 8) {
 		switch(choix) {
-			case 1: 
+			case 1:
 				affichageJeuxDispos(tjeux, nbjeux);
 				break;
-			case 2: 
-				
+			case 2:
+				affichageEmpruntsCours(listempts, tjeux, tadherents, nbjeux, nbadherents);
 				break;
-			case 3: 
-				affichagReservationJeu(listres, tjeux, tadherents, nbjeux, nbadherents);
+			case 3:
+				affichageReservationJeu(listres, tjeux, tadherents, nbjeux, nbadherents);
 				break;
-			case 4: 
-				
+			case 4:
+
 				break;
-			case 5: 
-				
+			case 5:
+
 				break;
-			case 6: 
-				
+			case 6:
+
 				break;
-			case 7: 
-				
+			case 7:
+
 				break;
 			default:
-				
+
 				break;
 		}
 		printf("\nAppuyez sur une touche pour continuer");

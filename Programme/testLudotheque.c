@@ -5,7 +5,7 @@ void afficherJeu(Jeu jeu) {
 }
 
 void afficherJeux(Jeu **tjeux, int nbjeux) {
-	int i; 
+	int i;
 
 	printf("Nb Jeux : %d\n", nbjeux);
 	printf("ID Jeu\tNom\t\tType\tNb Exemplaire\n");
@@ -15,7 +15,7 @@ void afficherJeux(Jeu **tjeux, int nbjeux) {
 }
 
 void afficherAdherent(Adherent adh) {
-	printf("%d\t\t%s\t\t%s\t\t%s\t\t%d/%d/%d\n", adh.idAdherent, adh.civilite, adh.nom, 
+	printf("%d\t\t%s\t\t%s\t\t%s\t\t%d/%d/%d\n", adh.idAdherent, adh.civilite, adh.nom,
 		adh.prenom, adh.dateInscription.jour, adh.dateInscription.mois, adh.dateInscription.annee);
 }
 
@@ -30,7 +30,7 @@ void afficherAdherents(Adherent** tadherents, int nbadherents) {
 }
 
 void afficherEmprunt(Emprunt emp) {
-	printf("%d %d %d %d/%d/%d\n", emp.idEmprunt, emp.idAdherent, emp.idJeu, emp.dateEmprunt.jour, 
+	printf("%d %d %d %d/%d/%d\n", emp.idEmprunt, emp.idAdherent, emp.idJeu, emp.dateEmprunt.jour,
 		emp.dateEmprunt.mois, emp.dateEmprunt.annee);
 }
 
@@ -45,7 +45,7 @@ void afficherEmprunts(ListeEmp listemp, int nbempts) {
 }
 
 void afficherReservation(Reservation res) {
-	printf("%d %d %d %d/%d/%d\n", res.idReservation, res.idAdherent, res.idJeu, res.dateReservation.jour, 
+	printf("%d %d %d %d/%d/%d\n", res.idReservation, res.idAdherent, res.idJeu, res.dateReservation.jour,
 		res.dateReservation.mois, res.dateReservation.annee);
 }
 
@@ -60,7 +60,7 @@ void afficherReservations(ListeRes listres, int nbres) {
 }
 
 void testChargementFichiers(void) {
-	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichiers/adherents.don", 
+	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichiers/adherents.don",
 	*ficemprunts = "../Fichiers/emprunts.don", *ficreservations = "../Fichiers/reservations.don";
 	Jeu **tjeux;
 	Adherent** tadherents;
@@ -92,8 +92,42 @@ void testChargementFichiers(void) {
 	free(tadherents);
 }
 
+// TODO
+// void testCreation(void) {
+// 	char *ficadherents = "../Fichiers/adherents.don";
+// 	Adherent** tadherents, tnouvadherents;
+// 	int nbadherents = 0;
+//
+// 	Adherent adh;
+//
+// 	tadherents = chargementAdherents(ficadherents, &nbadherents);
+//
+// 	afficherAdherents(tadherents, nbadherents);
+//
+// 	adh = creationAdherent(nbadherents);
+// 	nbadherents++;
+//
+// 	tnouvadherents = (Adherent**)realloc(tadherents, nbadherents * sizeof(Adherent));
+// 	if (tadherents == NULL) {
+// 		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
+// 		exit(1);
+// 	}
+//
+// 	tnouvadherents[nbadherents + 1] = (Adherent*)malloc(sizeof(Adherent));
+// 	if (tadherents[nbadherents + 1] == NULL) {
+// 		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
+// 		exit(1);
+// 	}
+// 	*tnouvadherents[nbadherents + 1] = adh;
+//
+// 	afficherAdherents(tnouvadherents, nbadherents);
+//
+// 	free(tnouvadherents);
+// }
+
 int main(int argc, char *argv[]) {
 	//testChargementFichiers();
+	//testCreation();
 	application();
 
 	return EXIT_SUCCESS;
