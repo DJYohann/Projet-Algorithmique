@@ -12,7 +12,7 @@ Jeu lireJeu(FILE* flot) {
 	Jeu jeu;
 
 	fscanf(flot, "%d\n", &jeu.idJeu);
-	fgets(jeu.nom, 31, flot);
+	fgets(jeu.nom, 30, flot);
 	jeu.nom[strlen(jeu.nom) - 1] = '\0';
 	fscanf(flot, "%s %d", jeu.type, &jeu.nbExemp);
 
@@ -79,9 +79,9 @@ Adherent lireAdherent(FILE* flot) {
 	Adherent adh;
 
 	fscanf(flot, "%d %s\n", &adh.idAdherent, adh.civilite);
-	fgets(adh.nom, 31, flot);
+	fgets(adh.nom, 30, flot);
 	adh.nom[strlen(adh.nom) - 1] = '\0';
-	fgets(adh.prenom, 31, flot);
+	fgets(adh.prenom, 30, flot);
 	adh.prenom[strlen(adh.prenom) - 1] = '\0';
 	fscanf(flot, "%d/%d/%d", &adh.dateInscription.jour, &adh.dateInscription.mois, &adh.dateInscription.annee);
 
@@ -97,7 +97,7 @@ Paramètre : nbadherents (int) - nombre d'adherents
 Retour : adh (Adherent) - structure Adherent
 */
 
-Adherent creationAdherent(int nbadherents) {
+Adherent creationAdherent(int nbadherents, char *nom, char *prenom) {
 	Adherent nouv;
 
 	nouv.idAdherent = nbadherents + 1;
@@ -110,13 +110,8 @@ Adherent creationAdherent(int nbadherents) {
 		scanf("%s%*c", nouv.civilite);
 	}
 
-	printf("Nom : ");
-	fgets(nouv.nom, 30, stdin);
-	nouv.nom[strlen(nouv.nom) - 1] = '\0';
-
-	printf("Prénom : ");
-	fgets(nouv.prenom, 30, stdin);
-	nouv.prenom[strlen(nouv.prenom) - 1] = '\0';
+	strcpy(nouv.nom, nom);
+	strcpy(nouv.prenom, prenom);
 
 	printf("Date d'inscription \n");
 	printf("Jour : ");
@@ -279,6 +274,40 @@ ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp) {
 	return listemp;
 }
 
+ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], int *nbadherents)
+{
+	Adherent **nouvtadh;
+	Adherent adh;
+
+	int pos, idJeu;
+	char nom[30];
+	char prenom[30];
+	printf("Veuillez saisir votre nom : ");
+	fgets(nom, 30, stdin);
+	printf("Veuillez saisir votre prénom : ");
+	fgets(prenom, 30, stdin);
+	pos = recherchePosUtilisateur(tadherents, nom, prenom, *nbadherents);
+	if ( pos == -1 ) {
+		(*nbadherents)++;
+		nouvtadh=(Adherent**)realloc(tadherents, *nbadherents * sizeof(Adherent));
+		if (nouvtadh == NULL) {
+			fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
+			exit(1);
+		}
+		tadherents = nouvtadh;
+		tadherents[pos] = (Adherent*)malloc(sizeof(Adherent));
+		if (tadherents[pos] == NULL) {
+			fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
+			exit(1);
+		}
+		adh = creationAdherent(*nbadherents, nom, prenom);
+		*tadherents[pos] = adh;
+		pos = *nbadherents - 1;
+	}
+
+
+}
+
 /*
 Titre : listeReservationsVide
 Finalité : créer une liste chaînée de structure Reservation vide
@@ -395,6 +424,50 @@ int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux) {
 		}
 	}
 
+	return -1;
+}
+
+/*
+Titre : recherchePosJeu
+Auteur : Loris
+Finalité : rechercher un jeu avec l'identifiant et renvoyer sa position
+Variable : i (int) - indice du tableau
+Paramètres : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
+		     	   nomJeu (char*) -
+		         nbjeux (int) - nombre de jeux
+Retour : idJeu (int) -
+*/
+
+int recherchePosJeu(Jeu *tjeux[], int idJeu, int nbjeux)
+{
+	int i;
+	for (i = 0; i < nbjeux; i++)
+	{
+		if (tjeux[i]->idJeu == idJeu)
+			return i;
+	}
+	return -1;
+}
+
+/*
+Titre : recherchePosUtilisateur
+Auteur : Etienne
+Finalité : rechercher un jeu avec l'identifiant et renvoyer sa position
+Variable : i (int) - indice du tableau
+Paramètres : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
+		     	   nomJeu (char*) -
+		         nbjeux (int) - nombre de jeux
+Retour : idJeu (int) -
+*/
+
+int recherchePosUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents)
+{
+	int i;
+	for (i = 0; i < nbadherents; i++)
+	{
+		if (strcmp(tadherents[i]->nom, nom) == 0 && strcmp(tadherents[i]->prenom, prenom) == 0)
+			return i;
+	}
 	return -1;
 }
 
@@ -526,8 +599,8 @@ void affichageEmpruntsCours (ListeEmp listempts, Jeu *tjeux[], Adherent *tadhere
 
 	printf("Nom du Jeu emprunté\t\tIdentité\t\t\tDate d'emprunt\n");
 	while (listempts != NULL) {
-		posJeu =
-		posAdh = rechercheDichoAdherent(tadherents, listemp->emp.idJeu, nbjeux);
+		posJeu = recherchePosJeu(tjeux, listempts->emp.idJeu, nbjeux);
+		posAdh = rechercheDichoAdherent(tadherents, listempts->emp.idAdherent, nbadherents);
 
 		printf("%s\t\t%s\t%s\t\t%d/%d/%d\n", tjeux[posJeu]->nom, tadherents[posAdh]->nom, tadherents[posAdh]->prenom,
 		listempts->emp.dateEmprunt.jour, listempts->emp.dateEmprunt.mois, listempts->emp.dateEmprunt.annee);
@@ -661,19 +734,12 @@ void application(void) {
 	while (choix != 8) {
 		switch(choix) {
 			case 1:
-				afficherJeux(tjeux, nbjeux);
-				afficherEmprunts(listempts, nbempts);
 				affichageJeuxDispos(tjeux, nbjeux);
 				break;
 			case 2:
-				afficherJeux(tjeux, nbjeux);
-				afficherAdherents(tadherents, nbadherents);
-				afficherEmprunts(listempts, nbempts);
 				affichageEmpruntsCours(listempts, tjeux, tadherents, nbjeux, nbadherents);
 				break;
 			case 3:
-				afficherJeux(tjeux, nbjeux);
-				afficherReservations(listres, nbres);
 				affichageReservationJeu(listres, tjeux, tadherents, nbjeux, nbadherents);
 				break;
 			case 4:
@@ -686,6 +752,7 @@ void application(void) {
 
 				break;
 			case 7:
+				exit(1);
 
 				break;
 			default:

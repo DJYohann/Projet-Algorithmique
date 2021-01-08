@@ -7,7 +7,6 @@
 /* Énumérations */
 
 typedef enum {FAUX, VRAI} Bool;
-typedef enum {carte, construction, logique, plateau, tuile}Type;
 
 /* Structures */
 
@@ -64,7 +63,7 @@ Jeu lireJeu(FILE* flot);
 Jeu** chargementJeux(char *nomFic, int *nbjeux);
 
 Adherent lireAdherent(FILE* flot);
-Adherent creationAdherent(int nbadherents);
+Adherent creationAdherent(int nbadherents, char *nom, char *prenom);
 Adherent** chargementAdherents(char *nomFic, int *nbadherents);
 
 Emprunt lireEmprunt(FILE* flot);
@@ -80,6 +79,8 @@ ListeRes insererRes (ListeRes listres, Reservation res);
 ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres);
 
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
+int recherchePosJeu(Jeu *tjeux[], int idJeu, int nbjeux);
+int recherchePosUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents);
 int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
 
 int type(Jeu *tabJeux[], int tailleLogJeux);
