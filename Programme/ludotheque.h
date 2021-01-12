@@ -67,10 +67,12 @@ Adherent creationAdherent(int nbadherents, char *nom, char *prenom);
 Adherent** chargementAdherents(char *nomFic, int *nbadherents);
 
 Emprunt lireEmprunt(FILE* flot);
+Emprunt creationEmprunt(int nbemp, int idAdh, int idJeu, int jour, int mois, int annee);
 ListeEmp listeEmpruntsVide(void);
 ListeEmp insererEnTeteEmp(ListeEmp listemp, Emprunt emp);
 ListeEmp insererEmp(ListeEmp listemp, Emprunt emp);
 ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp);
+ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], Jeu** tjeux, int *nbadherents, int nbjeux, int *nbemp);
 
 Reservation lireReservation(FILE* flot);
 ListeRes listeReservationsVide(void);
@@ -80,7 +82,7 @@ ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres);
 
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
 int recherchePosJeu(Jeu *tjeux[], int idJeu, int nbjeux);
-int recherchePosUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents);
+int rechercheIdUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents);
 int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
 
 int type(Jeu *tabJeux[], int tailleLogJeux);

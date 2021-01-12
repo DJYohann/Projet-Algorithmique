@@ -92,9 +92,9 @@ Adherent lireAdherent(FILE* flot) {
 Titre : creationAdherent
 Auteur : Etienne
 Finalité : créer un nouvel adhérent
-Variable : adh (Adherent) - structure Adherent
+Variable : nouv (Adherent) - structure Adherent
 Paramètre : nbadherents (int) - nombre d'adherents
-Retour : adh (Adherent) - structure Adherent
+Retour : nouv (Adherent) - structure Adherent
 */
 
 Adherent creationAdherent(int nbadherents, char *nom, char *prenom) {
@@ -170,6 +170,55 @@ Adherent** chargementAdherents(char *nomFic, int *nbadherents) {
 	fclose(fic);
 	return tadherents;
 }
+
+/*
+Titre : ajoutAdherent
+Finalité :
+Auteur : Etienne
+*/
+
+Adherent** ajoutAdherent(Adherent** tadherents, int* nbadherents, Adherent nouv)
+{
+ 	Adherent** nouvtab;
+	int i;
+
+	(*nbadherents)++;
+ 	i = *nbadherents - 1;
+
+	 //reallouer le tableau selon le nombre d'adhérents
+ 	nouvtab = (Adherent**)realloc(tadherents,*nbadherents * sizeof(Adherent));
+	if (nouvtab == NULL) {
+		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
+		exit(1);
+	}
+	nouvtab[i] = (Adherent*)malloc(sizeof(Adherent));
+	if (nouvtab[i] == NULL) {
+		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
+		exit(1);
+	}
+	*nouvtab[i] = nouv;
+	return nouvtab;
+}
+
+/*
+Titre : annulationReservation
+Finalité :
+auteur : Loris
+*/
+
+// void annulationReservation (int idJeu, Adherent**, listeEmp listemp, *nbadherents)
+// {
+// 	int i;
+// 	char nom[30], prenom[30];
+// 	printf("Saisissez votre Nom : ");
+// 	fgets(nom, 30, stdin);
+// 	printf("Saisissez votre Prénom : ")
+// 	fgets(prenom, 30, stdin);
+// 	while (i < *nbadherents)
+// 	{
+//
+// 	}
+// }
 
 /*
 Titre : listeEmpruntsVide
@@ -274,38 +323,82 @@ ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp) {
 	return listemp;
 }
 
-ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], int *nbadherents)
-{
-	Adherent **nouvtadh;
-	Adherent adh;
+/*
+Titre : enregistrementEmprunt
+Finalité :
+Auteur : Etienne
+*/
 
-	int pos, idJeu;
-	char nom[30];
+ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], Jeu* tjeux[], int *nbadherents, int nbjeux, int *nbemp)
+{
+	Emprunt nouv;
+	Adherent adh;
+	int jour, mois, annee;
+	int idAdh, idJeu;
+	char nom[30], nomJeu[30];
 	char prenom[30];
+
 	printf("Veuillez saisir votre nom : ");
 	fgets(nom, 30, stdin);
+	nom[strlen(nom) - 1] = '\0';
 	printf("Veuillez saisir votre prénom : ");
 	fgets(prenom, 30, stdin);
-	pos = recherchePosUtilisateur(tadherents, nom, prenom, *nbadherents);
-	if ( pos == -1 ) {
-		(*nbadherents)++;
-		nouvtadh=(Adherent**)realloc(tadherents, *nbadherents * sizeof(Adherent));
-		if (nouvtadh == NULL) {
-			fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
-			exit(1);
-		}
-		tadherents = nouvtadh;
-		tadherents[pos] = (Adherent*)malloc(sizeof(Adherent));
-		if (tadherents[pos] == NULL) {
-			fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
-			exit(1);
-		}
+	prenom[strlen(prenom) - 1] = '\0';
+	idAdh = rechercheIdUtilisateur(tadherents, nom, prenom, *nbadherents);
+	if ( idAdh == -1 ) {
 		adh = creationAdherent(*nbadherents, nom, prenom);
-		*tadherents[pos] = adh;
-		pos = *nbadherents - 1;
+		idAdh = adh.idAdherent;
+		tadherents = ajoutAdherent(tadherents, nbadherents, adh);
 	}
+	printf("Saisir nom du jeux : ");
+	fgets(nomJeu, 30, stdin);
+	nomJeu[strlen(nomJeu) - 1] = '\0';
+	idJeu = rechercheIdJeu(tjeux, nomJeu, nbjeux);
+	if(idJeu == -1)
+	{
+		printf("Jeu non trouvé.\n");
+		return listemp;
+	}
+	printf("Saisir le jour de l'emprunt : ");
+	scanf("%d%*c", &jour);
+	printf("Saisir le mois de l'emprunt : ");
+	scanf("%d%*c", &mois);
+	printf("Saisir l'année de l'emprunt : ");
+	scanf("%d%*c", &annee);
+	nouv = creationEmprunt(*nbemp, idAdh, idJeu, jour, mois, annee);
+	listemp = insererEnTeteEmp(listemp, nouv);
+	(*nbemp)++;
+	return listemp;
+}
 
+/*
+Titre : enregistrementReservation
+Finalité :
+Auteur : Etienne
+*/
 
+ListeRes enregistrementReservation(ListeRes listres, Adherent *tadherents[], Jeu* tjeux[], int *nbadherents, int nbjeux, int *nbres) {
+	return NULL;
+}
+
+/*
+Titre : creationEmprunt
+Finalité :
+Auteur : Etienne
+*/
+
+Emprunt creationEmprunt(int nbemp, int idAdh, int idJeu, int jour, int mois, int annee)
+{
+	Emprunt nouv;
+
+	nouv.idEmprunt = nbemp + 1;
+	nouv.idAdherent = idAdh;
+	nouv.idJeu = idJeu;
+	nouv.dateEmprunt.jour = jour;
+	nouv.dateEmprunt.mois = mois;
+	nouv.dateEmprunt.annee = annee;
+
+	return nouv;
 }
 
 /*
@@ -450,7 +543,7 @@ int recherchePosJeu(Jeu *tjeux[], int idJeu, int nbjeux)
 }
 
 /*
-Titre : recherchePosUtilisateur
+Titre : rechercheIdUtilisateur
 Auteur : Etienne
 Finalité : rechercher un jeu avec l'identifiant et renvoyer sa position
 Variable : i (int) - indice du tableau
@@ -460,13 +553,13 @@ Paramètres : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
 Retour : idJeu (int) -
 */
 
-int recherchePosUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents)
+int rechercheIdUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents)
 {
 	int i;
 	for (i = 0; i < nbadherents; i++)
 	{
 		if (strcmp(tadherents[i]->nom, nom) == 0 && strcmp(tadherents[i]->prenom, prenom) == 0)
-			return i;
+			return tadherents[i]->idAdherent;
 	}
 	return -1;
 }
@@ -743,7 +836,11 @@ void application(void) {
 				affichageReservationJeu(listres, tjeux, tadherents, nbjeux, nbadherents);
 				break;
 			case 4:
-
+				afficherJeux(tjeux, nbjeux);
+				afficherEmprunts(listempts, nbempts);
+				listempts = enregistrementEmprunt(listempts, tadherents, tjeux, &nbadherents, nbjeux, &nbempts);
+				afficherAdherents(tadherents, nbadherents);
+				afficherEmprunts(listempts, nbempts);
 				break;
 			case 5:
 
