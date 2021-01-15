@@ -284,7 +284,7 @@ Auteur : Yohann
 Titre supprimerEnTeteEmp
 */
 
-ListeEmp supprimerEnTeteEmp(ListeEmp listemp, Emprunt emp) {
+ListeEmp supprimerEnTeteEmp(ListeEmp listemp) {
 	MaillonEmp* m;
 
 	if (listemp == NULL) {
@@ -316,7 +316,7 @@ ListeEmp supprimerEmp(ListeEmp listemp, Emprunt emp) {
 	}
 
 	if (emp.idEmprunt == listemp->emp.idEmprunt) {
-		return supprimerEnTeteEmp(listemp, emp);
+		return supprimerEnTeteEmp(listemp);
 	}
 
 	listemp->suiv = supprimerEmp(listemp->suiv, emp);
@@ -405,7 +405,7 @@ ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], Jeu* tj
 		tadherents = ajoutAdherent(tadherents, nbadherents, adh);
 	}
 
-	nbEmpAdh = VerificationNbEmprunts(listemp, idAdh);
+	nbEmpAdh = verificationNbEmprunts(listemp, idAdh);
 	if (nbEmpAdh == 3) {
 		printf("Nombre d'emprunts maximal atteint.\n");
 		return listemp;
@@ -431,7 +431,7 @@ Titre : VerificationNbEmprunts
 Finalité :
 */
 
-int VerificationNbEmprunts(ListeEmp listemp, int idAdh)
+int verificationNbEmprunts(ListeEmp listemp, int idAdh)
 {
 	int i = 0;
 	while (listemp != NULL) {
@@ -448,7 +448,7 @@ Titre : retourJeu
 Finalité :
 */
 
-// void retourJeu(ListeEmp listemp, ListeRes listres, Jeu* tjeux[], int nbjeux) {
+// void retourJeu(ListeEmp listemp, ListeRes listres, Jeu* tjeux[], Adherent* tadherents,  int *nbemp, int *nbres, int nbjeux, int nbadherents) {
 // 	int idJeu;
 // 	char nomJeu[30];
 // 	Bool bool;
@@ -462,18 +462,10 @@ Finalité :
 // 		return;
 // 	}
 //
-// 	bool = rechercheJeuEmprunt(listemp, idJeu);
-// 	if (bool == FAUX) {
-// 		printf("Aucun emprunt pour ce jeu\n");
-// 		return;
-// 	}
-//
 // 	while (listemp != NULL) {
 // 		if (idJeu == listemp->emp.idJeu) {
-// 			bool = rechercheJeuReservation(listres, idJeu);
-// 			if (bool == VRAI) {
-//
-// 			}
+// 			listemp = reservation2Emprunt(listemp, listres, tadherents, idJeu, );
+// 			listemp = supprimerEmp(listemp, listemp->emp);
 // 		}
 // 	}
 // }
@@ -484,9 +476,28 @@ Titre : retourJeu
 Finalité :
 */
 
-void reservation2Emprunt(ListeEmp listemp, ListeRes listres) {
-	return;
-}
+// ListeEmp reservation2Emprunt(ListeEmp listemp, ListeRes listres, Adherent *tadherents[], int idJeu, int nbemp) {
+// 	Emprunt emp;
+// 	int pos;
+// 	int jour, mois, annee;
+//
+// 	while (listres != NULL) {
+// 		if (idJeu == listres->res.idJeu) {
+// 			pos = rechercheDichoAdherent(tadherents, listres->emp.idAdh, nbadherents);
+// 			printf("Le jeu peut être emprunté par %s %s\n", tadherents[pos]->prenom, tadherents[pos]->nom);
+// 			printf("Date emprunt\n");
+// 			printf("Jour : ");
+// 			scanf("%d%*c", &jour);
+// 			printf("Mois : ");
+// 			scanf("%d%*c", &mois);
+// 			printf("Année : ");
+// 			scanf("%d%*c", &annee);
+// 			emp = creationEmprunt(nbemp, listres->emp.idAdh, listres->emp.idJeu, jour, mois, annee);
+// 			listres =
+// 			listemp = insererEnTeteEmp(listemp, emp);
+// 		}
+// 	}
+// }
 
 /*
 Auteur : Etienne
@@ -594,6 +605,52 @@ Retour : listemp (ListeRes) - liste chaînée de structure Reservation
 // }
 
 /*
+Auteur : Yohann
+Titre supprimerEnTeteEmp
+*/
+
+ListeRes supprimerEnTeteRes(ListeRes listres) {
+	MaillonRes *m;
+
+	if (listres == NULL) {
+		printf("Opération impossible\n");
+		exit(1);
+	}
+
+	m = listres;
+	listres = listres->suiv;
+	free(m);
+
+	return listres;
+}
+
+/*
+Auteur : Yohann
+Titre supprimerEmp
+*/
+
+ListeRes supprimerRes(ListeRes listres, Reservation res) {
+	if (listres == NULL) {
+		printf("A\n");
+		return listres;
+	}
+
+	if (res.idReservation < listres->res.idReservation) {
+		printf("%d %d\n", res.idReservation, listres->res.idReservation);
+		return listres;
+	}
+
+	if (res.idReservation == listres->res.idReservation) {
+		printf("%d %d\n", res.idReservation, listres->res.idReservation);
+		return supprimerEnTeteRes(listres);
+	}
+
+	listres->suiv = supprimerRes(listres->suiv, res);
+
+	return listres;
+}
+
+/*
 Titre : chargementReservations
 Finalité : charger en mémoire le fichier des réservations
 Variables : res (Reservation) - structure Reservation
@@ -635,7 +692,7 @@ ListeRes enregistrementReservation(ListeRes listres, Adherent *tadherents[], Jeu
 	Reservation nouv;
 	Adherent adh;
 	int jour, mois, annee;
-	int idAdh, idJeu;
+	int idAdh, idJeu, posJeu;
 	int nbResAdh;
 	char nom[30], nomJeu[30];
 	char prenom[30];
@@ -668,7 +725,7 @@ ListeRes enregistrementReservation(ListeRes listres, Adherent *tadherents[], Jeu
 		idAdh = adh.idAdherent;
 		tadherents = ajoutAdherent(tadherents, nbadherents, adh);
 	}
-	nbResAdh = VerificationNbReservations(listres, idAdh);
+	nbResAdh = verificationNbReservations(listres, idAdh);
 	if (nbResAdh == 3) {
 		printf("Nombre de réservations maximal atteint.\n");
 		return listres;
@@ -693,7 +750,7 @@ Titre : VerificationNbReservations
 Finalité :
 */
 
-int VerificationNbReservations(ListeRes listres, int idAdh)
+int verificationNbReservations(ListeRes listres, int idAdh)
 {
 	int i = 0;
 	while (listres != NULL) {
@@ -710,19 +767,74 @@ Titre : annulationReservation
 Finalité : annuler une réservation
 */
 
-// void annulationReservation (int idJeu, Adherent**, listeEmp listemp, *nbadherents)
-// {
-// 	int i;
-// 	char nom[30], prenom[30];
-// 	printf("Saisissez votre Nom : ");
-// 	fgets(nom, 30, stdin);
-// 	printf("Saisissez votre Prénom : ")
-// 	fgets(prenom, 30, stdin);
-// 	while (i < *nbadherents)
-// 	{
-//
-// 	}
-// }
+ListeRes annulationReservation (ListeRes listres, Jeu* tjeux[], Adherent* tadherents[], int nbjeux, int nbadherents, int *nbres)
+{
+	int idjeu, idadh, idres;
+	char nom[30], prenom[30], nomjeu[30];
+	Reservation res;
+
+	printf("Saisissez le nom du jeu dont vous voulez annuler la réservation : ");
+	fgets(nomjeu, 30, stdin);
+	nomjeu[strlen(nomjeu) - 1] = '\0';
+
+	idjeu=rechercheIdJeu(tjeux, nomjeu, nbjeux);
+	if (idjeu == -1)
+	{
+		printf("Ce jeu n'existe pas");
+		return listres;
+	}
+
+	printf("Saisissez votre Nom : ");
+	fgets(nom, 30, stdin);
+	nom[strlen(nom) - 1] = '\0';
+	printf("Saisissez votre Prénom : ");
+	fgets(prenom, 30, stdin);
+	prenom[strlen(prenom) - 1] = '\0';
+
+	idadh=rechercheIdUtilisateur(tadherents, nom, prenom, nbadherents);
+	if (idadh == -1)
+	{
+		printf("Cet utilisateur n'existe pas");
+		return listres;
+	}
+
+	idres = rechercheIdReservation(listres, idjeu,idadh);
+	if (idres == -1)
+	{
+		printf("La réservation n'existe pas");
+		return listres;
+	}
+
+	while (listres != NULL)
+	{
+		if (idres == listres->res.idReservation) {
+				res = listres->res;
+		}
+		listres = listres->suiv;
+	}
+
+	afficherReservation(res);
+	listres = supprimerRes(listres, res);
+	(*nbres)--;
+	return listres;
+}
+
+/*
+Auteur : Loris
+Titre : rechercheIdReservation
+Finalité : rechercher une réservation
+*/
+
+int rechercheIdReservation(ListeRes listres, int idJeu, int idAdh)
+{
+	while (listres != NULL)
+	{
+		if (idJeu == listres->res.idJeu && idAdh == listres ->res.idAdherent)
+			return listres->res.idReservation;
+		listres = listres->suiv;
+	}
+	return -1;
+}
 
 /*
 Auteur : Yohann
@@ -1108,24 +1220,22 @@ void application(void) {
 				affichageReservationJeu(listres, tjeux, tadherents, nbjeux, nbadherents);
 				break;
 			case 4:
-				afficherJeux(tjeux, nbjeux);
 				afficherEmprunts(listempts, nbempts);
 				listempts = enregistrementEmprunt(listempts, tadherents, tjeux, &nbadherents, nbjeux, &nbempts);
-				afficherJeux(tjeux, nbjeux);
 				afficherEmprunts(listempts, nbempts);
 				break;
 			case 5:
-				afficherJeux(tjeux, nbjeux);
 				afficherReservations(listres, nbres);
 				listres = enregistrementReservation(listres, tadherents, tjeux, &nbadherents, nbjeux, &nbres);
 				afficherReservations(listres, nbres);
-				afficherJeux(tjeux, nbjeux);
 				break;
 			case 6:
-				
+
 				break;
 			case 7:
-
+				afficherReservations(listres, nbres);
+				listres = annulationReservation(listres, tjeux, tadherents, nbjeux, nbadherents, &nbres);
+				afficherReservations(listres, nbres);
 				break;
 			default:
 
