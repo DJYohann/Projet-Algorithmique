@@ -59,13 +59,16 @@ void afficherReservations(ListeRes listres, int nbres) {
 	}
 }
 
-void testChargementFichiers(void) {
+void test(void) {
 	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichiers/adherents.don",
 	*ficemprunts = "../Fichiers/emprunts.don", *ficreservations = "../Fichiers/reservations.don";
 	Jeu **tjeux;
 	Adherent** tadherents;
 	ListeEmp listempts;
 	ListeRes listres;
+
+	char nomJeu[30];
+	int id;
 
 	listempts = listeEmpruntsVide();
 	listres = listeReservationsVide();
@@ -88,12 +91,19 @@ void testChargementFichiers(void) {
 	afficherReservations(listres, nbres);
 	printf("\n");
 
+	printf("Nom du jeu : ");
+	fgets(nomJeu, 30, stdin);
+	nomJeu[strlen(nomJeu) - 1] = '\0';
+
+	id = rechercheIdJeu(tjeux, nomJeu, nbjeux);
+	printf("ID : %d\n", id);
+
 	free(tjeux);
 	free(tadherents);
 }
 
 int main(int argc, char *argv[]) {
-	//testChargementFichiers();
+	//test();
 	application();
 
 	return EXIT_SUCCESS;

@@ -65,25 +65,33 @@ Jeu** chargementJeux(char *nomFic, int *nbjeux);
 Adherent lireAdherent(FILE* flot);
 Adherent creationAdherent(int nbadherents, char *nom, char *prenom);
 Adherent** chargementAdherents(char *nomFic, int *nbadherents);
+Adherent** ajoutAdherent(Adherent** tadherents, int* nbadherents, Adherent nouv);
 
 Emprunt lireEmprunt(FILE* flot);
 Emprunt creationEmprunt(int nbemp, int idAdh, int idJeu, int jour, int mois, int annee);
 ListeEmp listeEmpruntsVide(void);
 ListeEmp insererEnTeteEmp(ListeEmp listemp, Emprunt emp);
 ListeEmp insererEmp(ListeEmp listemp, Emprunt emp);
+ListeEmp supprimerEnTeteEmp(ListeEmp listemp, Emprunt emp);
+ListeEmp supprimerEmp(ListeEmp listemp, Emprunt emp);
 ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp);
 ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], Jeu** tjeux, int *nbadherents, int nbjeux, int *nbemp);
+int VerificationNbEmprunts(ListeEmp listemp, int idAdh);
 
 Reservation lireReservation(FILE* flot);
+Reservation creationReservation(int nbres, int idAdh, int idJeu, int jour, int mois, int annee);
 ListeRes listeReservationsVide(void);
 ListeRes insererEnTeteRes(ListeRes listres, Reservation res);
 ListeRes insererRes (ListeRes listres, Reservation res);
 ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres);
+ListeRes enregistrementReservation(ListeRes listres, Adherent *tadherents[], Jeu* tjeux[], int *nbadherents, int nbjeux, int *nbres);
+int VerificationNbReservations(ListeRes listres, int idAdh);
 
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
 int recherchePosJeu(Jeu *tjeux[], int idJeu, int nbjeux);
 int rechercheIdUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents);
 int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
+Bool rechercheJeuEmprunt(ListeEmp listemp, int idJeu);
 
 int type(Jeu *tabJeux[], int tailleLogJeux);
 int nom(Jeu *tabJeux[], int tailleLogJeux);
@@ -93,7 +101,7 @@ void triTabJeux(Jeu *tabJeux[], int tailleLogJeux);
 void afficherJeuDispo(Jeu jeu);
 void affichageJeuxDispos(Jeu *tabJeux[], int tailleLogJeux);
 void affichageEmpruntsCours (ListeEmp listempts, Jeu *tjeux[], Adherent *tadherents[], int nbjeux, int nbadherents);
-void affichageReservationJeu(ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents);
+// void affichageReservationJeu(ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents);
 
 int choixMenu(void);
 void application(void);
@@ -108,4 +116,4 @@ void afficherEmprunt(Emprunt emp);
 void afficherEmprunts(ListeEmp listemp, int nbempts);
 void afficherReservation(Reservation res);
 void afficherReservations(ListeRes listres, int nbres);
-void testChargementFichiers(void);
+void test(void);
