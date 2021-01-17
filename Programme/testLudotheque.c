@@ -102,7 +102,7 @@ void test(void) {
 	free(tadherents);
 }
 
-int main(int argc, char *argv[]) {
+int main(void) {
 	//test();
 	application();
 

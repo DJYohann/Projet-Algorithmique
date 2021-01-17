@@ -29,9 +29,9 @@ Variables : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
             fic (FILE*) - fichier de jeux
             i (int) - indice du tableau
 Paramètres : nomFic (char*) - nom du fichier
-			 nbjeux (int*) - nombre de jeux
+			 			 nbjeux (int*) - nombre de jeux
 Retours : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
-		  nbjeux (int*) - nombre de jeux
+		  		nbjeux (int*) - nombre de jeux
 */
 
 Jeu** chargementJeux(char *nomFic, int *nbjeux) {
@@ -96,7 +96,9 @@ Auteur : Etienne
 Titre : creationAdherent
 Finalité : créer un nouvel adhérent
 Variable : nouv (Adherent) - structure Adherent
-Paramètre : nbadherents (int) - nombre d'adherents
+Paramètres : nbadherents (int) - nombre d'adherents
+						 nom (char*) - nom de l'adhérent
+						 prenom (char*) - prénom de l'adhérent
 Retour : nouv (Adherent) - structure Adherent
 */
 
@@ -178,12 +180,20 @@ Adherent** chargementAdherents(char *nomFic, int *nbadherents) {
 Auteur : Etienne
 Titre : ajoutAdherent
 Finalité : ajouter un adhérent dans le tableau
+Variables : nouvtab (Adherent**) - tableau dynamique de pointeur
+					 nouvpointer (Adherent*) - pointeur sur la structure Adherent
+Paramètres : tadherents (Adherent**) - tableau dynamique de pointeur
+						 nbadherents (int*) - nombre d'adhérents
+						 nouv (Adherent) - structure Adherent
+Retour : tadherents (Adherent) - tableau dynamique de pointeur
 */
 
 Adherent** ajoutAdherent(Adherent** tadherents, int* nbadherents, Adherent nouv)
 {
  	Adherent** nouvtab;
-	int i;
+	Adherent* nouvpointer;
+
+	int i, j;
 
 	(*nbadherents)++;
  	i = *nbadherents - 1;
@@ -193,25 +203,19 @@ Adherent** ajoutAdherent(Adherent** tadherents, int* nbadherents, Adherent nouv)
 		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
 		exit(1);
 	}
-	nouvtab[i] = (Adherent*)malloc(sizeof(Adherent));
-	if (nouvtab[i] == NULL) {
+	tadherents = nouvtab;
+
+	for (j = 0; j < *nbadherents; j++) {
+		nouvpointer = (Adherent*)realloc(tadherents[j], sizeof(Adherent));
+		*tadherents[j] = *nouvpointer;
+	}
+	tadherents[i] = (Adherent*)malloc(sizeof(Adherent));
+	if (tadherents[i] == NULL) {
 		fprintf(stderr, "Allocation mémoire impossible\nFichier %s ligne %d", __FILE__, __LINE__);
 		exit(1);
 	}
-	*nouvtab[i] = nouv;
-	return nouvtab;
-}
-
-/*
-Auteur : Yohann
-Titre : listeEmpruntsVide
-Finalité : créer une liste chaînée de structure Emprunt vide
-Variable : listemp (ListeEmp) - liste chaînée de structure Emprunt
-Retour : listemp (ListeEmp) - liste chaînée de structure Emprunt
-*/
-
-ListeEmp listeEmpruntsVide(void) {
-	return NULL;
+	*tadherents[i] = nouv;
+	return tadherents;
 }
 
 /*
@@ -230,6 +234,46 @@ Emprunt lireEmprunt(FILE* flot) {
 		&emp.dateEmprunt.jour, &emp.dateEmprunt.mois, &emp.dateEmprunt.annee);
 
 	return emp;
+}
+
+/*
+Auteur : Etienne
+Titre : creationEmprunt
+Finalité : créer un emprunt
+Variable : nouv (Emprunt) - structure Emprunt
+Paramètres : nbemp (int) - nombre d'emprunts
+             idAdh (int) - id Adherent
+						 idJeu (int) - id Jeu
+						 jour (int) - jour
+						 mois (int) - mois
+						 annee (int) - annee
+Retour : nouv (Emprunt) - structure Emprunt
+*/
+
+Emprunt creationEmprunt(int nbemp, int idAdh, int idJeu, int jour, int mois, int annee)
+{
+	Emprunt nouv;
+
+	nouv.idEmprunt = nbemp + 1;
+	nouv.idAdherent = idAdh;
+	nouv.idJeu = idJeu;
+	nouv.dateEmprunt.jour = jour;
+	nouv.dateEmprunt.mois = mois;
+	nouv.dateEmprunt.annee = annee;
+
+	return nouv;
+}
+
+/*
+Auteur : Yohann
+Titre : listeEmpruntsVide
+Finalité : créer une liste chaînée de structure Emprunt vide
+Variable : listemp (ListeEmp) - liste chaînée de structure Emprunt
+Retour : listemp (ListeEmp) - liste chaînée de structure Emprunt
+*/
+
+ListeEmp listeEmpruntsVide(void) {
+	return NULL;
 }
 
 /*
@@ -288,6 +332,10 @@ ListeEmp insererEmp(ListeEmp listemp, Emprunt emp) {
 /*
 Auteur : Yohann
 Titre supprimerEnTeteEmp
+Finalité : supprimer un enmprun en-tête de liste
+Variable : m (MaillonEmp*) - pointeur sur maillon de la liste d'Emprunt
+Paramètre : listemp (ListeEmp) - liste d'Emprunt
+Retour : listemp (ListeEmp) - liste d'Emprunt
 */
 
 ListeEmp supprimerEnTeteEmp(ListeEmp listemp) {
@@ -309,6 +357,10 @@ ListeEmp supprimerEnTeteEmp(ListeEmp listemp) {
 /*
 Auteur : Yohann
 Titre supprimerEmp
+Finalité : supprimer un emprunt
+Paramètres : listemp (ListeEmp) - liste chaînée
+						 emp (Emprunt) - liste chaînée de Emprunt
+Retour : listemp
 */
 
 ListeEmp supprimerEmp(ListeEmp listemp, Emprunt emp) {
@@ -366,7 +418,13 @@ ListeEmp chargementEmprunts(char *nomFic, ListeEmp listemp, int *nbemp) {
 /*
 Auteur : Etienne
 Titre : enregistrementEmprunt
-Finalité :
+Finalité : enregistrer un emprunt
+Paramètres : listemp (ListeEmp) - liste chaînée
+						 tadherents (Adherent) - tableau dynamique de pointeur
+						 tjeux (Jeu) - tableau dynamique de pointeur
+						 nbadherents (entier) - pointeur
+						 nbjeux (entier) - pointeur
+						 nbemp (entier) - pointeur
 */
 
 ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], Jeu* tjeux[], int *nbadherents, int nbjeux, int *nbemp)
@@ -417,7 +475,7 @@ ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], Jeu* tj
 		return listemp;
 	}
 
-	printf("Date d'emprunt : \n");
+	printf("Date d'emprunt\n");
 	printf("Jour : ");
 	scanf("%d%*c", &jour);
 	printf("Mois : ");
@@ -425,7 +483,7 @@ ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], Jeu* tj
 	printf("Année : ");
 	scanf("%d%*c", &annee);
 	nouv = creationEmprunt(*nbemp, idAdh, idJeu, jour, mois, annee);
-	listemp = insererEnTeteEmp(listemp, nouv);
+	listemp = insererEmp(listemp, nouv);
 	tjeux[posJeu]->nbExemp--;
 	(*nbemp)++;
 	return listemp;
@@ -434,7 +492,10 @@ ListeEmp enregistrementEmprunt(ListeEmp listemp, Adherent *tadherents[], Jeu* tj
 /*
 Auteur : Etienne
 Titre : VerificationNbEmprunts
-Finalité :
+Finalité : vérifier le nombre d'emprunt d'un adhérent
+Variable : i (int) - nombre d'emprunt
+Paramètres : listemp (ListeEmp) - liste chaînée d'Emprunt
+             idAdh (int) - id Adherent
 */
 
 int verificationNbEmprunts(ListeEmp listemp, int idAdh)
@@ -450,93 +511,6 @@ int verificationNbEmprunts(ListeEmp listemp, int idAdh)
 
 /*
 Auteur : Yohann
-Titre : retourJeu
-Finalité :
-*/
-
-// void retourJeu(ListeEmp listemp, ListeRes listres, Jeu* tjeux[], Adherent* tadherents,  int *nbemp, int *nbres, int nbjeux, int nbadherents) {
-// 	int idJeu, idAdh;
-// 	char nomJeu[30], nomAdh[30], prenomAdh[30];
-//
-// 	printf("Nom du jeu : ");
-// 	fgets(nomJeu, 30, stdin);
-// 	nomJeu[strlen(nomJeu) - 1] = '\0';
-// 	idJeu = rechercheIdJeu(tjeux, nomJeu, nbjeux);
-// 	if (idJeu == -1) {
-// 		printf("Jeu non existant\n");
-// 		return;
-// 	}
-//
-// 	printf("Nom : ", );
-// 	fgets(nomAdh, 30, stdin);
-// 	nomAdh[strlen(nomAdh) - 1] = '\0';
-// 	printf("Prénom : ", );
-// 	fgets(prenomAdh, 30, stdin);
-// 	prenomAdh[strlen(prenomAdh) - 1] = '\0';
-// 	idAdh = rechercheIdUtilisateur()
-// }
-
-/*
-Auteur : Yohann
-Titre : retourJeu
-Finalité :
-*/
-
-// ListeEmp reservation2Emprunt(ListeEmp listemp, ListeRes listres, Adherent *tadherents[], int idJeu, int nbemp) {
-// 	Emprunt emp;
-// 	int pos;
-// 	int jour, mois, annee;
-//
-// 	while (listres != NULL) {
-// 		if (idJeu == listres->res.idJeu) {
-// 			pos = rechercheDichoAdherent(tadherents, listres->emp.idAdh, nbadherents);
-// 			printf("Le jeu peut être emprunté par %s %s\n", tadherents[pos]->prenom, tadherents[pos]->nom);
-// 			printf("Date emprunt\n");
-// 			printf("Jour : ");
-// 			scanf("%d%*c", &jour);
-// 			printf("Mois : ");
-// 			scanf("%d%*c", &mois);
-// 			printf("Année : ");
-// 			scanf("%d%*c", &annee);
-// 			emp = creationEmprunt(nbemp, listres->emp.idAdh, listres->emp.idJeu, jour, mois, annee);
-// 			listres =
-// 			listemp = insererEnTeteEmp(listemp, emp);
-// 		}
-// 	}
-// }
-
-/*
-Auteur : Etienne
-Titre : creationEmprunt
-Finalité :
-*/
-
-Emprunt creationEmprunt(int nbemp, int idAdh, int idJeu, int jour, int mois, int annee)
-{
-	Emprunt nouv;
-
-	nouv.idEmprunt = nbemp + 1;
-	nouv.idAdherent = idAdh;
-	nouv.idJeu = idJeu;
-	nouv.dateEmprunt.jour = jour;
-	nouv.dateEmprunt.mois = mois;
-	nouv.dateEmprunt.annee = annee;
-
-	return nouv;
-}
-
-/*
-Titre : listeReservationsVide
-Finalité : créer une liste chaînée de structure Reservation vide
-Variable : listres (ListeRes) - liste chaînée de structure Reservation
-Retour : listres (ListeRes) - liste chaînée de structure Reservation
-*/
-
-ListeRes listeReservationsVide(void) {
-	return NULL;
-}
-
-/*
 Titre : lireReservation
 Finalité : lire une réservation dans un flot donné
 Variable : res (Reservation) - structure Reservation
@@ -556,7 +530,15 @@ Reservation lireReservation(FILE* flot) {
 /*
 Auteur : Etienne
 Titre : creationReservation
-Finalité :
+Finalité : créer une réservation
+Variable : nouv (Reservation) - structure Reservation
+Paramètres : nbres (int) - nombre de réservations
+            idAdh (int) - id adherent
+						idJeu (int) - id jeu
+						jour (int) - jour
+						mois (int) - mois
+						annee (int) - annee
+Retour : nouv (Reservation) - structure Reservation
 */
 
 Reservation creationReservation(int nbres, int idAdh, int idJeu, int jour, int mois, int annee)
@@ -574,6 +556,19 @@ Reservation creationReservation(int nbres, int idAdh, int idJeu, int jour, int m
 }
 
 /*
+Auteur : Yohann
+Titre : listeReservationsVide
+Finalité : créer une liste chaînée de structure Reservation vide
+Variable : listres (ListeRes) - liste chaînée de structure Reservation
+Retour : listres (ListeRes) - liste chaînée de structure Reservation
+*/
+
+ListeRes listeReservationsVide(void) {
+	return NULL;
+}
+
+/*
+Auteur : Yohann
 Titre : insererEnTeteRes
 Finalité : insérer en tête de liste une réservation
 Variable : m (MaillonRes*) - pointeur sur un maillon de la liste
@@ -598,6 +593,7 @@ ListeRes insererEnTeteRes(ListeRes listres, Reservation res) {
 }
 
 /*
+Auteur : Yohann
 Titre : insererRes
 Finalité : insérer dans la liste une réservation
 Paramètres : listemp (ListeRes) - liste chaînée de structure Reservation
@@ -626,6 +622,10 @@ ListeRes insererRes (ListeRes listres, Reservation res) {
 /*
 Auteur : Yohann
 Titre supprimerEnTeteRes
+Finalité : supprime en tête de liste
+Variable : m (MaillonRes*) - pointeur sur maillon de la liste Reservation
+Paramètre : listres (ListeRes) - liste de Reservation
+Rettour : listres (ListeRes) - liste de Reservation
 */
 
 ListeRes supprimerEnTeteRes(ListeRes listres) {
@@ -646,6 +646,10 @@ ListeRes supprimerEnTeteRes(ListeRes listres) {
 /*
 Auteur : Yohann
 Titre supprimerRes
+Finalité : supprime une réservation
+Variables : listres (ListeRes) - liste de Reservation
+            res (Reservation) - structure de Reservation
+Retour : listres (ListeRes) - liste de Reservation
 */
 
 ListeRes supprimerRes(ListeRes listres, Reservation res) {
@@ -667,13 +671,14 @@ ListeRes supprimerRes(ListeRes listres, Reservation res) {
 }
 
 /*
+Auteur : Yohann
 Titre : chargementReservations
 Finalité : charger en mémoire le fichier des réservations
 Variables : res (Reservation) - structure Reservation
             fic (FILE*) - fichier des réservations
 Paramètres : nomFic (char*) - nom du fichier
-			 listres (ListeRes) - liste chaînée de structure Reservation
-			 nbemp (int*) - nombre de réservations
+			 			 listres (ListeRes) - liste chaînée de structure Reservation
+			 		 	 nbemp (int*) - nombre de réservations
 Retour : listres (ListeRes) - liste chaînée de structure Reservation
 */
 
@@ -701,7 +706,14 @@ ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres) {
 /*
 Auteur : Etienne
 Titre : enregistrementReservation
-Finalité :
+Finalité : enregistrer une réservation
+Variables : listres (ListeRes) - liste chaînée de structure Reservation
+           tadherents (Adherent**) - tableau d'adherent
+					 tjeux (Jeu**) - tableau de jeu
+					 nbadherents (int*) - nombre d'adherents
+					 nbjeux (int) - nombre de jeux
+					 nbres (int) - nombre de réservations
+Retour : listres (ListeRes) - liste chaînée de structure Reservation
 */
 
 ListeRes enregistrementReservation(ListeRes listres, Adherent *tadherents[], Jeu* tjeux[], int *nbadherents, int nbjeux, int *nbres) {
@@ -755,7 +767,7 @@ ListeRes enregistrementReservation(ListeRes listres, Adherent *tadherents[], Jeu
 	printf("Année : ");
 	scanf("%d%*c", &annee);
 	nouv = creationReservation(*nbres, idAdh, idJeu, jour, mois, annee);
-	listres = insererEnTeteRes(listres, nouv);
+	listres = insererRes(listres, nouv);
 	(*nbres)++;
 	return listres;
 }
@@ -763,7 +775,11 @@ ListeRes enregistrementReservation(ListeRes listres, Adherent *tadherents[], Jeu
 /*
 Auteur : Etienne
 Titre : VerificationNbReservations
-Finalité :
+Finalité : vérifie si le nombre de réservation maximal est atteint.
+Paramètre : listres (ListeRes) - liste chaînée
+						idAdh (int) - id adherent
+Variable : i (int) - nombre de réservations
+Retour : i (int) - nombre de réservations
 */
 
 int verificationNbReservations(ListeRes listres, int idAdh)
@@ -781,6 +797,20 @@ int verificationNbReservations(ListeRes listres, int idAdh)
 Auteur : Loris
 Titre : annulationReservation
 Finalité : annuler une réservation
+Variables : idjeu (int) - id Jeu
+            idadh (int) - id Adherent
+						idres (int) - id Reservation
+						nom (char) - nom de l'adhérent
+						prenom (char) - prenom de l'adhérent
+						nomjeu (char) - nom du jeu
+						res (Reservation) - structure Reservation
+Paramètres : listres (ListeRes) - liste chaînée de structure Reservation
+					  tjeux (Jeu**) - tableau de jeu
+            tadherents (Adherent**) - tableau d'adherent
+						nbjeux (int) - nombre de jeux
+						nbadherents (int) - nombre d'adherents
+						nbres (int*) - nombre de réservations
+Retour : listres (ListeRes) - liste chaînée de structure Reservation
 */
 
 ListeRes annulationReservation (ListeRes listres, Jeu* tjeux[], Adherent* tadherents[], int nbjeux, int nbadherents, int *nbres)
@@ -821,20 +851,89 @@ ListeRes annulationReservation (ListeRes listres, Jeu* tjeux[], Adherent* tadher
 		return listres;
 	}
 
-	// rechercheReservation(listres, &res, idres);
-	// afficherReservation(res);
-	while (listres != NULL) {
-		if (idres == listres->res.idReservation) {
-			listres = supprimerRes(listres, listres->res);
-		}
-		listres = listres->suiv;
+	rechercheReservation(listres, &res, idres);
+	listres = supprimerRes(listres, res);
+
 	}
+
 	afficherReservations(listres, *nbres);
 	(*nbres)--;
 	return listres;
 }
 
 /*
+Auteur : Yohann
+Titre : retourJeu
+Finalité : retourner un jeu emprunté et débloqué une réservation sur le jeu en question
+Paramètre : listemp (ListeEmp) - liste chaînée de listeEmp
+						listres (ListeRes) - liste chaînée de réservations
+						tjeux (Jeu) - tableau dynamique de pointeurs
+						tadherents (Adherent) - tableau dynamique de pointeurs
+						nbemp (int) - nombre d'emprunts
+						nbres (int) - nombre de réservation
+						nbjeux (int) - nombre de jeux
+						nbadherents (int) - nombre d'adhérents
+*/
+
+void retourJeu(ListeEmp listemp, ListeRes listres, Jeu* tjeux[], Adherent* tadherents[],  int *nbemp, int *nbres, int nbjeux, int nbadherents) {
+	int idJeu, idAdh, jour, mois, annee;
+	char nomJeu[30], nomAdh[30], prenomAdh[30];
+	Emprunt emp;
+
+	printf("Nom du jeu : ");
+	fgets(nomJeu, 30, stdin);
+	nomJeu[strlen(nomJeu) - 1] = '\0';
+	idJeu = rechercheIdJeu(tjeux, nomJeu, nbjeux);
+	if (idJeu == -1) {
+		printf("Jeu non existant\n");
+		return;
+	}
+
+	printf("Nom : ");
+	fgets(nomAdh, 30, stdin);
+	nomAdh[strlen(nomAdh) - 1] = '\0';
+	printf("Prénom : ");
+	fgets(prenomAdh, 30, stdin);
+	prenomAdh[strlen(prenomAdh) - 1] = '\0';
+	idAdh = rechercheIdUtilisateur(tadherents, nomAdh, prenomAdh, nbadherents);
+	if (idAdh == -1) {
+		printf("Utilisateur non existant\n");
+		return;
+	}
+
+	while (listres != NULL) {
+		if (idJeu == listres->res.idJeu) {
+			printf("Date emprunt\n");
+			printf("Jour : ");
+			scanf("%d%*c", &jour);
+			printf("Mois : ");
+			scanf("%d%*c", &mois);
+			printf("Année : ");
+			scanf("%d%*c", &annee);
+			emp = creationEmprunt(*nbemp, listres->idAdh, idJeu, jour, mois, annee);
+			(*nbemp)++;
+			listemp = insererEmp(listemp, emp);
+			listres = supprimerRes(listres, listres->res);
+			(*nbres)--;
+		}
+		listres = listres->suiv;
+	}
+
+	while (listemp != NULL) {
+		if (idJeu == listemp->emp.idJeu && idAdh == listemp->emp.idAdherent) {
+			listemp = supprimerEmp(listemp, listemp->emp);
+			(*nbemp)--;
+		}
+		listemp = listemp->suiv;
+	}
+}
+
+/*
+Auteur : Loris
+Finalité : recherche une réservation
+Paramètres : listres (ListeRes) - liste Reservation
+						 res (Reservation) - structure Reservation
+						 idres (int) - id reservation
 
 */
 
@@ -853,6 +952,9 @@ void rechercheReservation(ListeRes listres, Reservation* res, int idres) {
 Auteur : Loris
 Titre : rechercheIdReservation
 Finalité : rechercher une réservation
+Paramètres : listres (ListeRes) - liste de Reservation
+             idJeu (int) - id jeu
+						 idAdh (int) - id adherent
 */
 
 int rechercheIdReservation(ListeRes listres, int idJeu, int idAdh)
@@ -873,9 +975,9 @@ Titre : rechercheIdJeu
 Finalité : rechercher un jeu avec le nom et renvoyer son identifiant
 Variable : i (int) - indice du tableau
 Paramètres : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
-		     	   nomJeu (char*) -
+		     	   nomJeu (char*) - nom du jeu
 		         nbjeux (int) - nombre de jeux
-Retour : idJeu (int) -
+Retour : idJeu (int) - id jeu
 */
 
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux) {
@@ -896,9 +998,9 @@ Titre : recherchePosJeu
 Finalité : rechercher un jeu avec l'identifiant et renvoyer sa position
 Variable : i (int) - indice du tableau
 Paramètres : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
-		     	   nomJeu (char*) -
+		     	   idJeu (int) - id jeu
 		         nbjeux (int) - nombre de jeux
-Retour : idJeu (int) -
+Retour : i (int) - indice du tableau
 */
 
 int recherchePosJeu(Jeu *tjeux[], int idJeu, int nbjeux)
@@ -915,12 +1017,13 @@ int recherchePosJeu(Jeu *tjeux[], int idJeu, int nbjeux)
 /*
 Auteur : Etienne
 Titre : rechercheIdUtilisateur
-Finalité : rechercher un jeu avec l'identifiant et renvoyer sa position
+Finalité : rechercher l'id d'un adhérent avec son nom et prenom
 Variable : i (int) - indice du tableau
-Paramètres : tjeux (Jeu**) - tableau de pointeur sur la structure Jeu
-		     	   nomJeu (char*) -
-		         nbjeux (int) - nombre de jeux
-Retour : idJeu (int) -
+Paramètres : tadherents (Adherent**) - tableau de pointeur sur la structure Jeu
+		     	   nom (char*) - nom de l'adherent
+						 prenom (char*) - prenom de l'adherent
+		         nbadherents (int) - nombre d'adherent
+Retour : tadherents[i]->idAdherent (int) - id adherent
 */
 
 int rechercheIdUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents)
@@ -937,12 +1040,12 @@ int rechercheIdUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int 
 Auteur : Yohann
 Titre : rechercheDichoAdherent
 Finalité : rechercher un adhérent avec l'identifiant et renvoyer l'indice
-Variable : deb (int) -
-		       mil (int) -
-		       fin (int) -
-Paramètres : tadh (Adherent**) -
-             idAdherent (int) -
-             nbadherents (int) -
+Variable : deb (int) - debut tableau
+		       mil (int) - milieu tableau
+		       fin (int) - fin tableau
+Paramètres : tadh (Adherent**) - tableau d'adherent
+             idAdherent (int) - id adherent
+             nbadherents (int) - nombre adherents
 Retour : mil - (int)
 */
 
@@ -966,47 +1069,15 @@ int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents) {
 	return deb;
 }
 
-/*
-Auteur : Yohann
-Titre : rechercheJeuEmprunt
-Finalité : rechercher si un jeu existe dans les emprunts
-*/
-
-Bool rechercheJeuEmprunt(ListeEmp listemp, int idJeu) {
-	while (listemp != NULL) {
-		if (idJeu == listemp->emp.idJeu) {
-			return VRAI;
-		}
-		listemp = listemp->suiv;
-	}
-
-	return FAUX;
-}
-
-/*
-Auteur : Yohann
-Titre : rechercheJeuReservation
-Finalité : rechercher si un jeu existe dans les réservations
-*/
-
-Bool rechercheJeuReservation(ListeRes listres, int idJeu) {
-	while (listres != NULL) {
-		if (idJeu == listres->res.idJeu) {
-			return VRAI;
-		}
-		listres = listres->suiv;
-	}
-
-	return FAUX;
-}
 
 /*
 Auteur : Etienne
 Titre : type
-Finalité :
-Variables :
-Paramètres :
-Retour :
+Finalité : trier les jeux par type
+Variables : i (int) - variable pour boucle for
+						pge (int) - position du plus grand
+Paramètres : tabJeux (Jeu) - tableau dynamique de pointeur
+Retour : pge (int) - position du plus grand
 */
 
 int type(Jeu *tabJeux[], int tailleLogJeux) {
@@ -1024,10 +1095,12 @@ int type(Jeu *tabJeux[], int tailleLogJeux) {
 /*
 Auteur : Etienne
 Titre : nom
-Finalité :
-Variables :
-Paramètres :
-Retour :
+Finalité : trier les jeux par ordre alphabétique
+Variables : i (int) - variable pour boucle for
+						pge (int) - position du plus grand
+Paramètres : tabJeux (Jeu) - tableau dynamique de pointeur
+						 tailleLogJeux (int) - nombre de jeux total
+Retour : pge - entier "le plus grand"
 */
 
 int nom(Jeu *tabJeux[], int tailleLogJeux) {
@@ -1047,9 +1120,11 @@ int nom(Jeu *tabJeux[], int tailleLogJeux) {
 /*
 Auteur : Etienne
 Titre : echanger
-Finalité :
-Variable :
-Paramètres :
+Finalité : échanger de places deux éléments d'un tableau
+Variable : tmp (Jeu) - structre Jeu
+Paramètres : tabJeux (Jeu) - tableau dynamique de pointeur
+						 i (int) - position dans le tableau tabJeux
+						 j (int) - position dans le tableau tabJeux
 */
 
 void echanger(Jeu *tabJeux[], int i, int j) {
@@ -1063,9 +1138,11 @@ void echanger(Jeu *tabJeux[], int i, int j) {
 /*
 Auteur : Etienne
 Titre : triTabJeux
-Finalité :
-Variables :
-Paramètres :
+Finalité : trier le tableau des jeux
+Variables : taille (int) - taille logique du tableau
+						pge (int) - position du plus grand type de jeu
+Paramètres : tabJeux (Jeu**) - tableau dynamique de pointeur
+						 tailleLogJeux (int) - nombre de jeux dans le tableau
 */
 
 void triTabJeux(Jeu *tabJeux[], int tailleLogJeux) {
@@ -1091,8 +1168,12 @@ void triTabJeux(Jeu *tabJeux[], int tailleLogJeux) {
 /*
 Auteur : Loris
 Titre : affichageEmpruntsCours
-Finalité :
-Paramètres :
+Finalité : afficher tous les emprunts en cours
+Paramètres : listempts (ListEmp) - liste chaînée de structre ListEmp
+						 tjeu(Jeu**) - tableau dynamique de pointeur
+						 tadherents(Adherent**) - tableau dynamique de pointeur
+						 nbjeux (int) - nombre total de jeux
+						 nbadherents (int) - nombre total d'adhérents
 */
 
 void affichageEmpruntsCours (ListeEmp listempts, Jeu *tjeux[], Adherent *tadherents[], int nbjeux, int nbadherents) {
@@ -1113,8 +1194,8 @@ void affichageEmpruntsCours (ListeEmp listempts, Jeu *tjeux[], Adherent *tadhere
 /*
 Auteur : Etienne
 Titre : afficherJeuDispo
-Finalité :
-Paramètres :
+Finalité : afficher le jeu disponnible
+Paramètres : jeu(Jeu) - liste chaînée de structure Jeu
 */
 
 void afficherJeuDispo(Jeu jeu) {
@@ -1124,9 +1205,10 @@ void afficherJeuDispo(Jeu jeu) {
 /*
 Auteur : Etienne
 Titre : affichageJeuxDispos
-Finalité :
-Variable :
-Paramètres :
+Finalité : afficher tous les jeux disponnibles
+Variable : i(int) - variable pou boucle while
+Paramètres : tabJeux(Jeu**) - tableau dynamique de pointeur
+						 tailleLogJeux (int) - nombre de jeux dans le tableau tabJeux
 */
 
 
@@ -1146,14 +1228,14 @@ void affichageJeuxDispos(Jeu *tabJeux[], int tailleLogJeux) {
 Auteur : Yohann
 Titre : affichagReservationJeu
 Finalité : afficher la liste de réservation pour un jeu donné
-Variables : nomJeu (char*) -
-            idJeu (int) -
-            pos (int) -
+Variables : nomJeu (char*) - tableau du nom du jeu
+            idJeu (int) - id du jeu
+            pos (int) - position del'adhérent
 Paramètre : listres (Reservations) - liste chaînée de structure Reservation
-            tjeux (Jeu**) -
-            tadh (Adherent**) -
-            nbjeux (int) -
-            nbadherents (int) -
+            tjeux (Jeu**) - tableau dynamique de pointeur
+            tadh (Adherent**) - tableau dynamique de pointeur
+            nbjeux (int) - nombre de jeux total
+            nbadherents (int) - nombre d'adhérents total
 */
 
 void affichageReservationJeu(ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents) {
@@ -1185,11 +1267,11 @@ void affichageReservationJeu(ListeRes listres, Jeu *tjeux[], Adherent *tadh[], i
 Auteur : Loris
 Titre : sauvegarderJeux
 Finalité : sauvegarder les jeux en mémoire dans le fichier
-Variables : flot (FILE*) -
-            i (int) -
-Paramètres : tjeux (Jeu**) -
-             nomFic (char*) -
-						 nbjeux (int) -
+Variables : flot (FILE*) - fichier d'écriture
+            i (int) - variable pour bloucle while
+Paramètres : tjeux (Jeu**) - tableau des jeux
+             nomFic (char*) - fichier de sauvegarde
+						 nbjeux (int) - nombre total de jeux
 */
 
 void sauvegarderJeux(Jeu* tjeux[], char* nomFic, int nbjeux) {
@@ -1215,11 +1297,11 @@ void sauvegarderJeux(Jeu* tjeux[], char* nomFic, int nbjeux) {
 Auteur : Loris
 Titre : sauvegarderAdherents
 Finalité : sauvegarder les adhérents en mémoire dans le fichier
-Variables : flot (FILE*) -
-            i (int) -
-Paramètres : tadherents (Adherent**) -
-             nomFic (char*) -
-						 nbadherents (int) -
+Variables : flot (FILE*) - fichier d'écriture
+            i (int) - variable pour boucle while
+Paramètres : tadherents (Adherent**) - tableau des adhérents
+             nomFic (char*) - fichier de sauvegarde
+						 nbadherents (int) - nombre total d'adhérents
 */
 
 void sauvegarderAdherents(Adherent* tadherents[], char* nomFic, int nbadherents) {
@@ -1246,11 +1328,11 @@ void sauvegarderAdherents(Adherent* tadherents[], char* nomFic, int nbadherents)
 Auteur : Loris
 Titre : sauvegarderEmprunts
 Finalité : sauvegarder les emprunts en mémoire dans le fichier
-Variables : flot (FILE*) -
-            i (int) -
-Paramètres : listemp (ListeEmp) -
-             nomFic (char*) -
-						 nbemp (int) -
+Variables : flot (FILE*) - fichier d'écriture
+            i (int) - variable pour boucle while
+Paramètres : listemp (ListeEmp) - liste chaînée des emprunts
+             nomFic (char*) - fichier de sauvegarde
+						 nbemp (int) - nombre total d'emrpunts
 */
 
 void sauvegarderEmprunts(ListeEmp listemp, char* nomFic, int nbemp) {
@@ -1273,11 +1355,11 @@ void sauvegarderEmprunts(ListeEmp listemp, char* nomFic, int nbemp) {
 Auteur : Loris
 Titre : sauvegarderReservations
 Finalité : sauvegarder les réservation en mémoire dans le fichier
-Variables : flot (FILE*) -
-            i (int) -
-Paramètres : listres (ListeRes) -
-             nomFic (char*) -
-						 nbres (int) -
+Variables : flot (FILE*) - flot d'écriture
+            i (int) -variable pour boucle while
+Paramètres : listres (ListeRes) - liste chaînée des réservations
+             nomFic (char*) - fichier de sauvegarde
+						 nbres (int) - nombre total de réservations
 */
 
 void sauvegarderReservations(ListeRes listres, char* nomFic, int nbres) {
@@ -1316,11 +1398,12 @@ int choixMenu(void) {
 	printf("5 - Saisie réservation\n");
 	printf("6 - Retour d'un jeu\n");
 	printf("7 - Annulation d'une réservation\n");
-	printf("8 - Quitter\n");
+	printf("8 - Sauvegarde des données\n");
+	printf("9 - Quitter\n");
 
 	printf("Choix : ");
 	scanf("%d%*c", &choix);
-	while (choix < 1 || choix > 8) {
+	while (choix < 1 || choix > 9) {
 		printf("Choix : ");
 	 	scanf("%d%*c", &choix);
 	}
@@ -1332,7 +1415,19 @@ int choixMenu(void) {
 Auteurs : Etienne, Loris, Yohann
 Titre : application
 Finalité : application de la gestion de prêts de jeux de la ludothèque
-Variables :
+Variables : ficjeux (char*) - fichier des jeux
+ 					  ficadherents (char*) - fichier des adherents
+						ficemprunts (char*) - fichier des emprunts
+						ficreservations (char*) fichier des réservations
+						tjeux (Jeu**) - tableau dynamique de pointeur  sur la  structre Jeu
+						tadherents (Adherent** ) - tableau dynamique de pointeurs sur la structure Adherent
+						listempts (ListeEmp) - liste chaînée de la structure listEmp
+						listres (ListeRes) - liste chaînée de la structure Reservation
+						nbjeux (int) - nombre de jeux
+						nbadherents (int) - nombre d'adherents
+						nbempts (int) - nombre d'emprunts
+						nbres (int) - nombre de réservations
+						c (char) - caractère de saisie clavier
 */
 
 void application(void) {
@@ -1355,7 +1450,7 @@ void application(void) {
 	triTabJeux(tjeux, nbjeux);
 
 	choix = choixMenu();
-	while (choix != 8) {
+	while (choix != 9) {
 		switch(choix) {
 			case 1:
 				affichageJeuxDispos(tjeux, nbjeux);
@@ -1367,38 +1462,35 @@ void application(void) {
 				affichageReservationJeu(listres, tjeux, tadherents, nbjeux, nbadherents);
 				break;
 			case 4:
-				afficherEmprunts(listempts, nbempts);
 				listempts = enregistrementEmprunt(listempts, tadherents, tjeux, &nbadherents, nbjeux, &nbempts);
-				afficherEmprunts(listempts, nbempts);
 				break;
 			case 5:
-				afficherReservations(listres, nbres);
 				listres = enregistrementReservation(listres, tadherents, tjeux, &nbadherents, nbjeux, &nbres);
-				afficherReservations(listres, nbres);
 				break;
 			case 6:
-
+				retourJeu(listempts, listres, tjeux, tadherents, &nbempts, &nbres, nbjeux, nbadherents);
 				break;
 			case 7:
-				afficherReservations(listres, nbres);
 				listres = annulationReservation(listres, tjeux, tadherents, nbjeux, nbadherents, &nbres);
-				afficherReservations(listres, nbres);
 				break;
-			default:
-
-				break;
+			case 8:
+				sauvegarderJeux(tjeux, ficjeux, nbjeux);
+				sauvegarderAdherents(tadherents, ficadherents, nbadherents);
+				sauvegarderEmprunts(listempts, ficemprunts, nbempts);
+				sauvegarderReservations(listres, ficemprunts, nbres);
+				printf("\nSauvegarde effectuée\n");
+			default: break;
 		}
 		printf("\nAppuyez sur une touche pour continuer");
 		c = getchar();
 		choix = choixMenu();
 	}
 
-	afficherEmprunts(listempts, nbempts);
-
 	sauvegarderJeux(tjeux, ficjeux, nbjeux);
 	sauvegarderAdherents(tadherents, ficadherents, nbadherents);
 	sauvegarderEmprunts(listempts, ficemprunts, nbempts);
 	sauvegarderReservations(listres, ficemprunts, nbres);
+	printf("\nSauvegarde effectuée\n");
 
 	printf("\nAu revoir !\n");
 

@@ -4,10 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-/* Énumérations */
-
-typedef enum {FAUX, VRAI} Bool;
-
 /* Structures */
 
 typedef struct {
@@ -88,16 +84,15 @@ ListeRes supprimerRes(ListeRes listres, Reservation res);
 ListeRes chargementReservations(char *nomFic, ListeRes listres, int *nbres);
 ListeRes enregistrementReservation(ListeRes listres, Adherent *tadherents[], Jeu* tjeux[], int *nbadherents, int nbjeux, int *nbres);
 int verificationNbReservations(ListeRes listres, int idAdh);
+ListeRes annulationReservation (ListeRes listres, Jeu* tjeux[], Adherent* tadherents[], int nbjeux, int nbadherents, int *nbres);
 
-void retourJeu(ListeEmp listemp, ListeRes listres, Jeu* tjeux[], Adherent* tadherents,  int *nbemp, int *nbres, int nbjeux, int nbadherents);
-ListeEmp reservation2Emprunt(ListeEmp listemp, ListeRes listres, Adherent *tadherents[], int idJeu, int nbemp);
+void retourJeu(ListeEmp listemp, ListeRes listres, Jeu* tjeux[], Adherent* tadherents[],  int *nbemp, int *nbres, int nbjeux, int nbadherents);
 
 void rechercheReservation(ListeRes listres, Reservation* res, int idres);
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
 int recherchePosJeu(Jeu *tjeux[], int idJeu, int nbjeux);
 int rechercheIdUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents);
 int rechercheDichoAdherent(Adherent *tadh[], int idAdherent, int nbadherents);
-Bool rechercheJeuEmprunt(ListeEmp listemp, int idJeu);
 int rechercheIdReservation(ListeRes listres, int idJeu, int idAdh);
 
 int type(Jeu *tabJeux[], int tailleLogJeux);
