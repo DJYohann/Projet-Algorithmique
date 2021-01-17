@@ -92,6 +92,7 @@ int verificationNbReservations(ListeRes listres, int idAdh);
 void retourJeu(ListeEmp listemp, ListeRes listres, Jeu* tjeux[], Adherent* tadherents,  int *nbemp, int *nbres, int nbjeux, int nbadherents);
 ListeEmp reservation2Emprunt(ListeEmp listemp, ListeRes listres, Adherent *tadherents[], int idJeu, int nbemp);
 
+void rechercheReservation(ListeRes listres, Reservation* res, int idres);
 int rechercheIdJeu(Jeu *tjeux[], char *nomJeu, int nbjeux);
 int recherchePosJeu(Jeu *tjeux[], int idJeu, int nbjeux);
 int rechercheIdUtilisateur(Adherent *tadherents[], char *nom, char *prenom, int nbadherents);
@@ -108,6 +109,11 @@ void afficherJeuDispo(Jeu jeu);
 void affichageJeuxDispos(Jeu *tabJeux[], int tailleLogJeux);
 void affichageEmpruntsCours (ListeEmp listempts, Jeu *tjeux[], Adherent *tadherents[], int nbjeux, int nbadherents);
 void affichageReservationJeu(ListeRes listres, Jeu *tjeux[], Adherent *tadh[], int nbjeux, int nbadherents);
+
+void sauvegarderJeux(Jeu* tjeux[], char* nomFic, int nbjeux);
+void sauvegarderAdherents(Adherent* tadherents[], char* nomFic, int nbadherents);
+void sauvegarderEmprunts(ListeEmp listemp, char* nomFic, int nbemp);
+void sauvegarderReservations(ListeRes listres, char* nomFic, int nbres);
 
 int choixMenu(void);
 void application(void);
