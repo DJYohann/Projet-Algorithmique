@@ -854,9 +854,7 @@ ListeRes annulationReservation (ListeRes listres, Jeu* tjeux[], Adherent* tadher
 	rechercheReservation(listres, &res, idres);
 	listres = supprimerRes(listres, res);
 
-	}
-
-	afficherReservations(listres, *nbres);
+	afficherReservations(listres,*nbres);
 	(*nbres)--;
 	return listres;
 }
@@ -910,7 +908,7 @@ void retourJeu(ListeEmp listemp, ListeRes listres, Jeu* tjeux[], Adherent* tadhe
 			scanf("%d%*c", &mois);
 			printf("Année : ");
 			scanf("%d%*c", &annee);
-			emp = creationEmprunt(*nbemp, listres->idAdh, idJeu, jour, mois, annee);
+			emp = creationEmprunt(*nbemp, listres->res.idAdherent, idJeu, jour, mois, annee);
 			(*nbemp)++;
 			listemp = insererEmp(listemp, emp);
 			listres = supprimerRes(listres, listres->res);
