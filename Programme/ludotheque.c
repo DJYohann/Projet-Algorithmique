@@ -207,7 +207,7 @@ Adherent** ajoutAdherent(Adherent** tadherents, int* nbadherents, Adherent nouv)
 
 	for (j = 0; j < *nbadherents; j++) {
 		nouvpointer = (Adherent*)realloc(tadherents[j], sizeof(Adherent));
-		*tadherents[j] = *nouvpointer;
+		tadherents[j] = nouvpointer;
 	}
 	tadherents[i] = (Adherent*)malloc(sizeof(Adherent));
 	if (tadherents[i] == NULL) {
@@ -854,8 +854,6 @@ ListeRes annulationReservation (ListeRes listres, Jeu* tjeux[], Adherent* tadher
 	rechercheReservation(listres, &res, idres);
 	listres = supprimerRes(listres, res);
 
-	}
-
 	afficherReservations(listres, *nbres);
 	(*nbres)--;
 	return listres;
@@ -910,7 +908,7 @@ void retourJeu(ListeEmp listemp, ListeRes listres, Jeu* tjeux[], Adherent* tadhe
 			scanf("%d%*c", &mois);
 			printf("Année : ");
 			scanf("%d%*c", &annee);
-			emp = creationEmprunt(*nbemp, listres->idAdh, idJeu, jour, mois, annee);
+			emp = creationEmprunt(*nbemp, listres->res.idAdherent, idJeu, jour, mois, annee);
 			(*nbemp)++;
 			listemp = insererEmp(listemp, emp);
 			listres = supprimerRes(listres, listres->res);
