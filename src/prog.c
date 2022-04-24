@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "ludotheque.h"
 
 void afficherJeu(Jeu jeu) {
@@ -60,8 +63,8 @@ void afficherReservations(ListeRes listres, int nbres) {
 }
 
 void test(void) {
-	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichiers/adherents.don",
-	*ficemprunts = "../Fichiers/emprunts.don", *ficreservations = "../Fichiers/reservations.don";
+	char *ficjeux = "./src/files/jeux.don", *ficadherents = "./src/files/adherents.don",
+	*ficemprunts = "./src/files/emprunts.don", *ficreservations = "./src/files/reservations.don";
 	Jeu **tjeux;
 	Adherent** tadherents;
 	ListeEmp listempts;
@@ -102,9 +105,20 @@ void test(void) {
 	free(tadherents);
 }
 
-int main(void) {
-	//test();
-	application();
-
-	return EXIT_SUCCESS;
+int main(int argc, char const *argv[]) {
+	if (argc != 2) {
+		fprintf(stderr, "Argument manquant\ntest pour tester\nmain pour lancer le programme\n");
+		return EXIT_FAILURE;
+	} else {
+		if (strcmp(argv[1], "test") == 0) {
+			test();
+			return EXIT_SUCCESS;
+		} else if (strcmp(argv[1], "main") == 0) {
+			application();
+			return EXIT_SUCCESS;
+		} else {
+			fprintf(stderr, "Argument non existant\ntest pour tester\nmain pour lancer le programme\n");
+			return EXIT_FAILURE;
+		}
+	}
 }

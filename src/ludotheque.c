@@ -1,3 +1,6 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "ludotheque.h"
 
 /*
@@ -1429,8 +1432,8 @@ Variables : ficjeux (char*) - fichier des jeux
 */
 
 void application(void) {
-	char *ficjeux = "../Fichiers/jeux.don", *ficadherents = "../Fichiers/adherents.don",
-	*ficemprunts = "../Fichiers/emprunts.don", *ficreservations = "../Fichiers/reservations.don";
+	char *ficjeux = "./src/files/jeux.don", *ficadherents = "./src/files/adherents.don",
+	*ficemprunts = "./src/files/emprunts.don", *ficreservations = "./src/files/reservations.don";
 
 	Jeu **tjeux;
 	Adherent** tadherents;
