@@ -48,3 +48,9 @@ argument :
 ```
 make clean
 ```
+
+## Auteurs
+
+* [Loris CHAPON](https://github.com/Loris-Chapon)
+* [Étienne CELLIER](https://github.com/etcllr)
+* [Yohann BREUIL](https://github.com/DJYohann)
